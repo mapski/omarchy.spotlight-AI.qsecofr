@@ -1,7 +1,16 @@
 # Omarchy Model Search
 
-A planned public Omarchy plugin combining a polished Spotlight-style search palette with model selection across installed AI providers.
+Private development prototype of a keyboard-first Omarchy search palette with optional, explicitly selected AI Q&A. The full product is not release-ready.
 
-This folder contains the approved architecture and is being initialized against the intended canonical remote: [`mapski/omarchy.spotlight-AI.qsecofr`](https://github.com/mapski/omarchy.spotlight-AI.qsecofr). Keep that GitHub repository private until the user approves the 1.0 public release. See the mandatory Omarchy development and publishing gates in [ARCHITECTURE.md](ARCHITECTURE.md).
+Local application search, configured file-root search, bounded private history, and offline adapters for LM Studio, llama.cpp and Ollama are implemented. Codex, Claude, Grok, Hermes and Pi are detected independently but remain disabled pending Q&A isolation verification. Live local inference tests are deferred at the user's request.
 
-The folder currently contains design documentation only. It does not contain plugin code, install anything, or publish a repository.
+See [validation](docs/VALIDATION.md), [provider readiness](docs/providers.md), [dependencies](docs/dependencies.md), [environment evidence](docs/environment.md), and the [approved architecture](ARCHITECTURE.md).
+
+Development uses the official VM333 clone ID mp.emojis. It is enabled only on the authorized lab VM. Do not install on the daily desktop without explicit authorization. Use official Omarchy plugin commands; never launch a second Quickshell process.
+
+Run offline checks from this directory:
+
+    python -m unittest discover -s tests -v
+    omarchy plugin validate .
+
+The canonical repository remains private until explicit 1.0 public-release approval. No push or public release has occurred.

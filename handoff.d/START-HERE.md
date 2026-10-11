@@ -11,4 +11,4 @@ Read these files in order:
 3. [`../ARCHITECTURE.md`](../ARCHITECTURE.md) — approved product direction and mandatory Omarchy development/release gates.
 4. [`../README.md`](../README.md) — project overview.
 
-The project is at architecture/specification stage. Do not begin implementation until the user has reviewed the architecture and the implementation plan has been written and reviewed. Verify remote and local state first; the handoff records what this session could and could not confirm.
+Implementation was approved and is underway in the attached codex/model-search worktree. Read the latest HANDOFF.md update before acting; older snapshots are retained for provenance.

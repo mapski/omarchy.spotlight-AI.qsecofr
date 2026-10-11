@@ -1,9 +1,17 @@
 # Active handoff: Omarchy Model Search
 
 **Updated:** 2026-10-11 (America/Toronto)
-**Stage:** Updated architecture approved; implementation plan written and awaiting review. Implementation not started.
+**Stage:** Private prototype implementation and lab validation in progress.
 
-## Latest session update (2026-10-11)
+## Current continuation — 2026-10-11
+
+Implementation and inline plan execution were approved. Active worktree: /home/mp/.codex/worktrees/model-search/Omarchy-Model-Search, branch codex/model-search. VM333 is authorized; access is through PX1 QEMU guest agent as mp. Never record the supplied lab password. Daily desktop integration remains unauthorized.
+
+31 tests pass. Offline local adapters, preliminary palette/state, asynchronous discovery and rendering limits are implemented. VM clone mp.emojis is enabled. Summon/hide, Escape, disable/re-enable, restart and removal/restoration passed. Existing emoji shortcut failed the automated check and remains unresolved. Dependencies already present; no model/server install. User explicitly deferred live local inference.
+
+Initial security scan completed and its one rendering-amplification finding was fixed with regressions. See docs/VALIDATION.md and docs/providers.md. CLI execution remains disabled pending safety verification. Selection persistence, history UI/follow-up, settings UI, visual matrix and release gates remain incomplete. No push.
+
+## Earlier session update (2026-10-11)
 
 This update supersedes the earlier access and next-action snapshot below. The user approved the architecture including llama.cpp, Ollama, and Pi. Read the [implementation plan](../docs/superpowers/plans/2026-10-11-model-search.md) next; obtain plan review and execution-method selection before implementation.
 

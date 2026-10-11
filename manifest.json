@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "mp.emojis",
+  "name": "Model Search (development)",
+  "version": "0.1.0",
+  "author": "Omarchy",
+  "description": "Local search and explicit model Q&A; development clone",
+  "kinds": [
+    "overlay"
+  ],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "Overlay.qml"
+  },
+  "omarchy": {
+    "clonedFrom": "omarchy.emojis"
+  },
+  "license": "MIT"
+}

@@ -10,7 +10,7 @@
 
 **Spec:** [ARCHITECTURE.md](../../../ARCHITECTURE.md), approved 2026-10-11 including llama.cpp, Ollama, and Pi.
 
-**Status:** Proposed plan awaiting review and execution-method selection. No implementation, clone, installation, or release authorized by this document alone.
+**Status:** Approved for inline implementation on 2026-10-11. Private prototype in progress on VM333; see docs/VALIDATION.md for current evidence and remaining gates.
 
 ## Global Constraints
 

@@ -1,11 +1,15 @@
 # Development environment evidence
 
-Recorded 2026-10-11. The user selected a separate test VM; its address and graphical-session status are pending. No daily-desktop plugin clone, installation, enablement, shortcut change or restart is authorized or performed.
+Verified 2026-10-11 on the user-authorized lab VM333 (mp, 10.0.0.210), reached through PX1 QEMU guest agent. Omarchy 4.0.4-1, Quickshell 0.3.1-1, Qt declarative 6.11.2-1; graphical Hyprland session active.
 
-Read-only daily-host inventory: Omarchy 4.0.4-1; shell `/usr/share/omarchy/shell`; qmllint `/usr/lib/qt6/bin/qmllint`. Executables found: codex, claude, grok, hermes, pi, llama-server, lms. Ollama was not on PATH. This establishes executable presence only, not safety, authentication or model availability. Repeat relevant checks on the VM.
+User authorized snapshots instead of other backups. Disk snapshots model-search-predev-20261011 and model-search-prepalette-20261011 were confirmed before changes. No daily-desktop plugin installation or configuration changes.
 
-The built-in emoji search is an overlay candidate (`omarchy.emojis`) with `open(payloadJson)`, `close()`, `toggle()` and shell-injected `manifest`/`shell` properties. Inspect the VM's installed contract before selecting it. No clone ID exists yet.
+Official clone: omarchy plugin clone omarchy.emojis produced mp.emojis, clonedFrom omarchy.emojis. Development files were copied into that VM clone without source symlinks. Disable and re-enable succeeded; disabling restored builtin emoji availability. The existing shell was restarted after new files hit the installed shell's QML cache issue. No second Quickshell process was launched.
 
-Before cloning on the VM, record plugin discovery/enabled state, affected shell settings and shortcut conflicts; save a restrictive backup outside the repository. Record the official clone's generated ID and copy files without symlinks. Test disable/remove restores the built-in and compare after-state. No second Quickshell process.
+Manifest validation passed. qmllint exits zero with an external temporary qs import mapping; warnings remain for PanelWindow, QProcess exit metadata and dynamic theme properties. This is not warning-free lint. Updated overlay opened and displayed the Firefox application result at 1280x800. Continuation verified removal/restoration, official re-clone, summon/hide and Escape clear/close. The existing emoji shortcut did not summon the clone in automation; shortcut and scale/theme/streaming acceptance remain pending.
 
-Repository work is on the attached `codex/model-search` worktree. Merge 02fb89d preserves both unrelated histories, retains the approved README and the remote MIT license. No push has occurred.
+The VM has no llama-server, ollama or lms command. User explicitly requested offline adapters be finished and live inference tests remain pending. No models or model servers were installed. CLI command presence does not establish safe Q&A execution; all CLI routes remain disabled.
+
+Running hermes --help unexpectedly invoked the installed Omarchy lazy bootstrap and installed Hermes/Python 3.13 in the VM. This side effect was disclosed and is covered by the predevelopment snapshot.
+
+Work lives in the attached codex/model-search worktree. Merge 02fb89d retains both histories and the remote MIT license. No push or public release.

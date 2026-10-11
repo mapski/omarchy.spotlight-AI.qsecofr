@@ -1,6 +1,6 @@
 # Architecture and Product Specification
 
-**Status:** Specification approved on 2026-10-11, including llama.cpp, Ollama, and Pi. Implementation has not started. The [implementation plan](docs/superpowers/plans/2026-10-11-model-search.md) awaits review.
+**Status:** Approved for inline implementation on 2026-10-11. Private prototype in progress on VM333; see docs/VALIDATION.md for current evidence and remaining gates.
 
 ## Purpose
 
