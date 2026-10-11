@@ -87,3 +87,28 @@ The latter two commands intentionally exit nonzero while this blocker exists. Wi
 Next: establish a supported tool policy that covers direct, code-mode, model-derived and collaboration tools; test unsolicited tool responses; then verify effective configuration/managed policy, model routing and native authentication in the same execution boundary. Do not replace model metadata merely to hide this failure or enable the route on the strength of the synthetic profile.
 
 The user-suggested `claude --settings '{"forceLoginMethod":"claudeai"}' /login` was not run: existing Claude subscription sign-in was already confirmed, and Claude remains blocked by explicit user choice. The setting selects the login method, not a hook/helper isolation boundary. [Official Claude guidance](https://support.claude.com/en/articles/14128775-claude-code-on-console-to-enterprise-migration) documents both the login selector and higher managed-policy precedence. Codex configuration reference: [official documentation](https://learn.chatgpt.com/docs/config-file/config-reference).
+
+## Codex executable-tool and configuration follow-up — 2026-10-11
+
+VM333, Codex 0.162.1, synthetic loopback Responses endpoint only:
+
+- A `gpt-6.1-sol` response calling `functions.exec` with `text("CODE_MODE_EXECUTION_MARKER")` executed JavaScript and returned that exact marker as a separate output text item. Disabling code_mode, code_mode_only, multi_agent_v2 and current_time_reminder did not remove the embedded tool surface in this profile. Two mock requests; no host command was requested by this response.
+- A `gpt-5.5` unsolicited apply_patch response was dispatched but did not write its disposable marker under the read-only sandbox. Two mock requests. This verifies the tested write rejection, not absence of tools.
+- A synthetic user-config MCP server did not start with ignore-user-config. The same server in a temporary `/etc/codex/config.toml` overlay did start and write a harmless marker. `mcp_servers={}` did not clear the inherited server; `mcp_servers.fixture.enabled=false` stopped that specifically named server. Neither result establishes a universal, race-free startup prohibition.
+- Version-matched source defines a startup `ToolPolicy.allowed_tools` ceiling, supplied through internal ExtensionDataInit. Its empty list denies tools, including generated code-mode tools. The inspected public CLI/config schema and thread/turn protocol do not expose that policy. Installed CLI strict-config rejected `tool_policy.allowed_tools=[]` before any fixture request. Do not pass unknown config fields without strict validation and assume they work.
+
+System-config tests use a disposable bubblewrap overlay and leave the VM's real `/etc` unchanged. All completed runs had no AGENTS sentinel, no JSONL session, and no literal synthetic prompt found in temporary HOME files. These remain scoped probes, not native-authentication or cloud-policy verification.
+
+Additional reproducible probes (add `--require-no-tools` to make any exposed tool or observed marker execution fail the gate):
+
+```sh
+python tests/manual/codex_isolation.py --disable-question --extra-optouts --tool-response code-mode
+python tests/manual/codex_isolation.py --model gpt-5.5 --disable-question --tool-response patch
+python tests/manual/codex_isolation.py --model synthetic --disable-question --mcp-layer user --require-no-tools
+python tests/manual/codex_isolation.py --model synthetic --disable-question --mcp-layer system --mcp-control empty
+python tests/manual/codex_isolation.py --model synthetic --disable-question --mcp-layer system --mcp-control disable-fixture --require-no-tools
+```
+
+Activation now depends on a supported embedding interface or upstream CLI change that (1) applies an immutable deny-all policy before constructing direct, embedded and generated tools, (2) prevents every MCP/helper/hook process from starting, including system/cloud configuration, and (3) binds the effective auth, configuration and explicit model to the same request. A preflight scan followed by normal CLI execution is insufficient. Do not patch the installed CLI, replace its catalog to disguise tools, or enable an adapter based on these probes. No API-key alternative or live inference is authorized by this investigation.
+
+Source evidence: version-tagged [tool policy](https://github.com/openai/codex/blob/rust-v0.162.1/codex-rs/ext/extension-api/src/tool_policy.rs), [configuration loader](https://github.com/openai/codex/blob/rust-v0.162.1/codex-rs/config/src/loader/mod.rs), and [public thread protocol](https://github.com/openai/codex/blob/rust-v0.162.1/codex-rs/app-server-protocol/src/protocol/v2/thread.rs). Source was inspected; no upstream code copied into the plugin and no new runtime dependency added. Bubblewrap was already present on the test VM.
