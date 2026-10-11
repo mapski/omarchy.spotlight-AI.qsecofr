@@ -1,7 +1,19 @@
 # Active handoff: Omarchy Model Search
 
 **Updated:** 2026-10-11 (America/Toronto)
-**Stage:** Architecture written; implementation not started.
+**Stage:** Updated architecture approved; implementation plan written and awaiting review. Implementation not started.
+
+## Latest session update (2026-10-11)
+
+This update supersedes the earlier access and next-action snapshot below. The user approved the architecture including llama.cpp, Ollama, and Pi. Read the [implementation plan](../docs/superpowers/plans/2026-10-11-model-search.md) next; obtain plan review and execution-method selection before implementation.
+
+GitHub authorization now works as `mapski`. Authenticated metadata and Git refs confirmed the exact canonical repository is private, with admin access and default branch `main`. Remote root is `17aa400`; local commits are `166a064` and `38fb53c`. Reconcile histories before pushing; no push has occurred.
+
+Read-only workstation checks found Omarchy `4.0.4-1`, shell files under `/usr/share/omarchy/shell`, and `/usr/lib/qt6/bin/qmllint`. No clone or installation occurred. The official clone command enables its copy immediately: establish an authorized test desktop and baseline first.
+
+The proposed plan adds explicit scope/defaults for review, including local search roots, bounded history and timeouts. Current omaSearch tool execution and auxiliary provider calls require removal for Q&A-only use. All runtime/security/license gates remain outstanding.
+
+## Earlier snapshot (retained for provenance)
 
 ## User goal
 

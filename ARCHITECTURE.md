@@ -1,10 +1,10 @@
 # Architecture and Product Specification
 
-**Status:** Approved direction; implementation has not started. Review this specification before implementation planning.
+**Status:** Specification approved on 2026-10-11, including llama.cpp, Ollama, and Pi. Implementation has not started. The [implementation plan](docs/superpowers/plans/2026-10-11-model-search.md) awaits review.
 
 ## Purpose
 
-Build a public Omarchy plugin that opens from a keyboard shortcut as a fast, polished search palette. It should handle ordinary local search and route an explicit AI query to a provider and model the user chooses: Codex, Claude, Grok through an installed Grok CLI and/or Hermes, or a local model served by LM Studio.
+Build a public Omarchy plugin that opens from a keyboard shortcut as a fast, polished search palette. It should handle ordinary local search and route an explicit AI query to a provider and model the user chooses: Codex, Claude, Grok through an installed Grok CLI and/or Hermes, Pi (pi.dev) with an explicitly selected underlying provider/model, or a local model served by LM Studio, llama.cpp, or Ollama.
 
 The visual and interaction goal is the compact, keyboard-first command palette demonstrated by [Omarchy Spotlight](https://github.com/maajix/omarchy-spotlight): centered search input, immediate ranked results, clear keyboard navigation, and a well-composed answer view. AI is one search mode in the palette, not a separate app window. The project should not copy Spotlight code unless a later implementation decision explicitly chooses that dependency and completes license review.
 
@@ -16,7 +16,9 @@ The visual and interaction goal is the compact, keyboard-first command palette d
 - Preserve upstream attribution, notices, and applicable MIT license text for omaSearch code retained or modified.
 - Detect installed provider commands and local endpoints. Let the user explicitly choose a provider and model; do not silently switch providers or send a query to a different service.
 - Use each cloud provider's supported CLI and existing user authentication. Do not scrape browser sessions, copy OAuth tokens, or collect provider passwords.
-- Treat LM Studio as a local provider through its local OpenAI-compatible API. Discover models from the running local server; do not load or download models automatically.
+- Treat LM Studio, llama.cpp, and Ollama as independent local server routes. Discover models from existing loopback endpoints; do not start services or download models automatically. LM Studio and llama.cpp use their OpenAI-compatible APIs; Ollama uses its native HTTP API.
+- For LM Studio and llama.cpp, require an already loaded model and avoid automatic model loading. For Ollama, list installed models and distinguish running models; an explicit query may let Ollama load the selected, already downloaded local model, but discovery must not trigger loading.
+- Add Pi (pi.dev) as a separate CLI adapter using its supported noninteractive interface and existing authentication. Display both Pi and its selected underlying provider/model; classify the destination by the actual backend, not by the CLI running locally.
 - Keep AI opt-in in settings and mark the selected destination clearly before a query is submitted.
 
 ## User experience
@@ -33,7 +35,7 @@ The visual and interaction goal is the compact, keyboard-first command palette d
 - **Spotlight-style QML palette:** owns window presentation, search input, result ranking display, keyboard navigation, provider/model controls, streaming display, and accessible states. It must remain responsive while a provider is working.
 - **Search router:** distinguishes local search, web search, and explicit AI requests. It does not infer permission to send a normal query to a cloud model.
 - **Provider registry and adapters:** each adapter reports availability, model choices, streaming support, image support, and invocation method. Shared UI does not hard-code provider-specific assumptions.
-- **Provider process/API boundary:** cloud adapters invoke supported local CLIs; LM Studio uses a loopback HTTP API. Output and errors are normalized for the UI, with cancellation and timeouts.
+- **Provider process/API boundary:** CLI adapters invoke supported local CLIs, including Pi; LM Studio, llama.cpp, and Ollama use loopback HTTP APIs. Output and errors are normalized for the UI, with cancellation and timeouts.
 - **Private state:** selected provider/model and bounded conversation history live under a user-owned state directory with restrictive permissions. Secrets are not copied there. The user can clear history.
 
 ## Provider behavior
@@ -44,8 +46,13 @@ The visual and interaction goal is the compact, keyboard-first command palette d
 | Claude | Installed `claude` CLI using its existing sign-in | Detect executable; use supported CLI model options and show only verified choices | No tools enabled for palette Q&A |
 | Grok | Detect standalone `grok` CLI and Hermes independently; show one or both routes when present | Ask each installed route for its supported model list when available; for Hermes, use its configured provider/model profile | No agent tools or desktop actions in palette Q&A |
 | LM Studio | Local OpenAI-compatible endpoint, normally on loopback | Detect a responding server and query its model list; user selects an already available model | Direct local inference, no tool calling, no automatic model downloads |
+| llama.cpp | Existing `llama-server` on a configured loopback endpoint; OpenAI-compatible chat API | Query `/v1/models`; offer only verified, already loaded models, accounting for the installed server mode | No tools, service startup, model downloads, or automatic model loading |
+| Ollama | Existing local HTTP server, normally `http://localhost:11434`; native chat API | Use `/api/tags` for installed models and `/api/ps` for running models; select an explicitly verified local model | No tools, pulls, service startup, or cloud-backed models in this local adapter; an explicit query may load the selected installed model |
+| Pi (pi.dev) | Installed `pi` CLI using a supported noninteractive print/JSON or RPC interface and its existing authentication | Detect executable; discover supported provider/model choices through the installed version’s documented interface; select both explicitly | Require verified Q&A-only operation with tools and executable extensions disabled; prevent automatic workspace context ingestion and session persistence outside the plugin’s history policy |
 
 If a CLI cannot expose models reliably, show a small, documented manual model field rather than guessing. A provider's model names and capabilities may change; discovery must fail visibly and preserve the last known selection only as a disabled choice until verified. There is no automatic cross-provider fallback.
+
+Pi is a routing harness, so its backend may be local or cloud. Before enabling this adapter, verify the installed version can enforce the tool, extension, context, and history restrictions above. Disable the route with an explanation if those guarantees cannot be established; a prompt asking the agent to avoid tools is insufficient. Local endpoint discovery alone also does not prove local inference: reject cloud-backed Ollama entries and verify the selected backend does not proxy prompts off-device.
 
 ## Safety, privacy, and reliability
 
@@ -66,10 +73,12 @@ The project folder is independent of `Omarchy-DR`. Before public release, establ
 - The palette opens quickly, focuses its search field, and supports keyboard-only search and selection.
 - Local results remain available with every AI provider stopped or absent.
 - An AI request displays the exact selected provider and model and streams or clearly indicates progress.
-- Codex, Claude, Grok CLI, Hermes, and LM Studio routes are detected independently; one missing route does not disable another.
+- Codex, Claude, Grok CLI, Hermes, Pi, LM Studio, llama.cpp, and Ollama routes are detected independently; one missing route does not disable another.
 - The user can switch among available models and stop a running request.
 - No query is silently rerouted to a different provider, and no AI tool can modify files or run commands in the initial release.
-- Local LM Studio use is verified to remain on loopback; no cloud request is made in local mode.
+- Local LM Studio, llama.cpp, and Ollama use is verified to remain on loopback with local inference; no cloud request is made in local mode. Test rejection of cloud-backed Ollama models and unavailable local endpoints.
+- Pi requests identify the selected backend/model and pass tool, extension, workspace-context, cancellation, and history-isolation checks before the adapter is enabled.
+- Discovery never starts a service, downloads a model, or loads one. Explicit Ollama queries may load an already downloaded model; LM Studio and llama.cpp require a verified loaded model.
 - Public packaging preserves upstream license and attribution requirements and passes Omarchy plugin validation.
 
 ## References
@@ -80,6 +89,9 @@ The project folder is independent of `Omarchy-DR`. Before public release, establ
 - [Hermes CLI reference](https://hermes-agent.nousresearch.com/docs/reference/cli-commands)
 - [Grok CLI reference](https://docs.x.ai/build/cli/reference)
 - [LM Studio local server documentation](https://lmstudio.ai/docs/developer/core/server)
+- [llama.cpp server documentation](https://github.com/ggml-org/llama.cpp/blob/master/tools/server/README.md)
+- [Ollama API introduction](https://docs.ollama.com/api/introduction), [installed models](https://docs.ollama.com/api/tags), and [running models](https://docs.ollama.com/api/ps)
+- [Pi](https://pi.dev/) and [official documentation](https://pi.dev/docs/latest)
 
 ## Mandatory Omarchy plugin development and release rules
 
@@ -99,7 +111,7 @@ If a guide step is unclear, a required check cannot run, or current Omarchy beha
 3. **Audit the unsandboxed boundary.** Omarchy plugins share the shell process and run with the user's permissions. Review every dependency, command, subprocess, HTTP destination, filesystem access, installer, privilege boundary, and remote build. Avoid unnecessary privileges. Document every external dependency, setup step, service, installer, and remote build in project docs. Keep provider credentials inside their supported CLIs; never scrape account stores or include secrets in logs.
 4. **Keep the manifest and IDs correct.** Use the exact temporary clone ID and development metadata while testing. Keep the clone-origin field during clone-based development so disable/remove restores the built-in. Validate the manifest kind, entry point, relative paths, and all referenced files. Before publishing, choose a permanent namespaced plugin ID, replace every temporary ID/reference, and remove clone-only metadata exactly as the guide requires.
 5. **Run all static validation.** Run `omarchy plugin validate` on the exact plugin directory. Run `qmllint` with the installed Omarchy shell imports against every QML entry point and component. Resolve all errors before runtime testing. Validate again after the final code, manifest, metadata, or packaging change.
-6. **Run every applicable runtime/lifecycle check.** Confirm Omarchy discovers the plugin and reports the expected ID, kind, and enabled state. Exercise the shell open/summon and close/hide routes, keyboard Escape/focus behavior, the real shortcut, disable/re-enable, shell restart, and removal. Check `qs`/Quickshell logs for load/runtime errors. For this search plugin, also test provider missing/unavailable, model discovery failure, cancellation, no-provider local search, local-only LM Studio routing, no silent provider fallback, and shortcut conflicts. Do not claim a check passed unless it was run and observed.
+6. **Run every applicable runtime/lifecycle check.** Confirm Omarchy discovers the plugin and reports the expected ID, kind, and enabled state. Exercise the shell open/summon and close/hide routes, keyboard Escape/focus behavior, the real shortcut, disable/re-enable, shell restart, and removal. Check `qs`/Quickshell logs for load/runtime errors. For this search plugin, also test provider missing/unavailable, model discovery failure, cancellation, no-provider local search, local-only LM Studio/llama.cpp/Ollama routing, rejection of cloud-backed models in local mode, Pi backend selection and Q&A isolation, no silent provider fallback, and shortcut conflicts. Do not claim a check passed unless it was run and observed.
 7. **Keep install/removal safe and user-controlled.** Document safe installation, enablement, configuration, disabling, and removal. Test removal and confirm it leaves no unexpected user data or system changes. Do not install or enable the plugin on the user's daily environment without explicit authorization and the required before/after documentation.
 8. **Do not skip visual review.** Review the overlay at the actual supported display scale and theme; verify sizing, focus, keyboard flow, readable streaming output, and empty/loading/error states. Keep a visual preview for release when practical and ensure it contains no private prompt/history data.
 
@@ -125,4 +137,4 @@ The publishing guide cannot be completed while the repository is private. That i
 
 ### Current GitHub access status
 
-On 2026-10-11, MP confirmed the supplied URL opens in their browser, so the URL is valid. From this agent environment, GitHub metadata lookup returned HTTP 404, local `gh auth status` reported the configured `mapski` token is invalid, and a read-only Git check failed because `github.com` did not resolve. The remote repository’s visibility and branch history therefore remain unverified here. Do not push until authenticated access verifies repository identity, private visibility, and remote history.
+On 2026-10-11, interactive sign-in restored authenticated access as `mapski`. API and Git checks verified `mapski/omarchy.spotlight-AI.qsecofr` is private, with admin access and default branch `main`. Remote history contains root commit `17aa400`; local history contains `166a064` and `38fb53c` and still needs reconciliation. Nothing has been pushed. Refresh remote identity, visibility, and history before any push.
