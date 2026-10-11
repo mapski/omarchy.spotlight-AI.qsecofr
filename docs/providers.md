@@ -5,7 +5,7 @@
 | LM Studio | Loopback :1234, loaded-model discovery and streaming | Live server version, locality and inference |
 | llama.cpp | Loopback :8080, loaded-model discovery, autoload=false on chat | Live server mode/version and inference |
 | Ollama | Loopback :11434, installed GGUF/local metadata filter, running-model query, chat | Live locality and inference |
-| Codex | Native sign-in/check flow; inference disabled | Mock profile leaves request_user_input advertised; production config/model/auth isolation still pending |
+| Codex | Native sign-in/check flow; inference disabled | Real-model mock exposes embedded code-mode tools or apply_patch; production config/model/auth isolation still pending |
 | Claude | Native sign-in/check flow; inference disabled | Non-bare mock passed; managed hooks and credential helper demonstrably execute |
 | Grok | Detected; disabled | Full no-tools, context, fallback and persistence controls |
 | Hermes | Detected; disabled | Full no-tools, context, fallback and persistence controls |
@@ -59,3 +59,31 @@ Fresh review found that separate native status and prompt processes do not bind 
 Automatic approval review rejected registry/UI wiring because those policy protections were unproven. The user then explicitly chose **Keep subscription CLI blocked**. The candidate remains unregistered and has `EXECUTION_APPROVED = False`, with a regression proving rejection before any subprocess launch. No API-key route was added; sign-in remains intact; no live inference occurred. Before future activation, establish a supported same-execution credential/policy boundary and bind the verified executable, then repeat independent review. Do not treat a passing personal preflight as activation approval.
 
 Current references: [managed-policy delivery and noninteractive behavior](https://code.claude.com/docs/en/server-managed-settings), [parent policy precedence](https://code.claude.com/docs/en/managed-settings), [model fallback controls](https://code.claude.com/docs/en/model-config).
+
+## Codex model-dependent tool gate — 2026-10-11
+
+The earlier unknown `synthetic` model inventory understated the tool surface. Codex 0.162.1 can send tools in `input[].type = additional_tools`, including nested namespaces, rather than the top-level `tools` array. The corrected manual probe inventories both. An empty top-level array is not a passing no-tools check.
+
+Credential-free loopback results with `tools.experimental_request_user_input.enabled=false`, the existing feature disable flags, temporary HOME/CODEX_HOME, and explicit model:
+
+| Model metadata | Tools observed | Strict no-tools gate |
+| --- | --- | --- |
+| unknown `synthetic` | None | Passes only this synthetic profile |
+| bundled `gpt-6.1-sol` | functions.exec, functions.wait, functions.request_user_input_async and six collaboration tools in additional_tools | Fails |
+| bundled `gpt-5.5` | apply_patch | Fails |
+
+Each run completed one mock request with the selected model unchanged, no AGENTS sentinel, no JSONL session and no literal synthetic prompt found in files under the temporary HOME. These limited checks do not establish absence of every persistence mechanism, system policy/configuration effect, executable tool behavior, or native ChatGPT-authenticated request behavior. No hostile tool response was executed. No credentials were read and no live inference occurred.
+
+Reproduce on the test VM with its direct installed Codex binary:
+
+```sh
+python tests/manual/codex_isolation.py --model synthetic --disable-question --require-no-tools
+python tests/manual/codex_isolation.py --model gpt-6.1-sol --disable-question --require-no-tools
+python tests/manual/codex_isolation.py --model gpt-5.5 --disable-question --require-no-tools
+```
+
+The latter two commands intentionally exit nonzero while this blocker exists. Without `--require-no-tools`, the script is an inventory, not an activation gate. The default now uses the bundled gpt-6.1-sol profile instead of an unknown model. The fixed loopback provider returns synthetic text; naming a real model never invokes it.
+
+Next: establish a supported tool policy that covers direct, code-mode, model-derived and collaboration tools; test unsolicited tool responses; then verify effective configuration/managed policy, model routing and native authentication in the same execution boundary. Do not replace model metadata merely to hide this failure or enable the route on the strength of the synthetic profile.
+
+The user-suggested `claude --settings '{"forceLoginMethod":"claudeai"}' /login` was not run: existing Claude subscription sign-in was already confirmed, and Claude remains blocked by explicit user choice. The setting selects the login method, not a hook/helper isolation boundary. [Official Claude guidance](https://support.claude.com/en/articles/14128775-claude-code-on-console-to-enterprise-migration) documents both the login selector and higher managed-policy precedence. Codex configuration reference: [official documentation](https://learn.chatgpt.com/docs/config-file/config-reference).
