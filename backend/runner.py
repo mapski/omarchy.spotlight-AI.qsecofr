@@ -10,13 +10,14 @@ import subprocess
 import time
 
 
-def stream_process(argv, input_data, cancel, *, timeout=120, max_bytes=1048576):
+def stream_process(argv, input_data, cancel, *, timeout=120, max_bytes=1048576,
+                   cwd=None, env=None, include_stderr=False):
     if cancel.is_set():
         return
     if len(input_data) > max_bytes:
         raise ValueError('Request too large')
     proc = subprocess.Popen(argv, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                            stderr=subprocess.PIPE, start_new_session=True)
+                            stderr=subprocess.PIPE, start_new_session=True, cwd=cwd, env=env)
     deadline = time.monotonic() + timeout
     counts = {proc.stdout: 0, proc.stderr: 0}
     offset = 0
@@ -53,7 +54,7 @@ def stream_process(argv, input_data, cancel, *, timeout=120, max_bytes=1048576):
                     counts[stream] += len(chunk)
                     if counts[stream] > max_bytes:
                         raise ValueError('Provider output exceeded limit')
-                    if stream is proc.stdout and not cancel.is_set():
+                    if (stream is proc.stdout or include_stderr) and not cancel.is_set():
                         yield chunk
             if proc.returncode != 0:
                 raise RuntimeError('Provider failed; check its sign-in and configuration')

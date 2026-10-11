@@ -5,6 +5,23 @@ from backend.main import Bridge
 
 
 class BridgeTests(unittest.TestCase):
+    def test_cancel_stops_auth_status_worker(self):
+        import threading
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as tmp:
+            bridge = Bridge(Path(tmp), lambda event: None)
+            entered, cancelled = threading.Event(), threading.Event()
+            def check(route, cancel=None):
+                entered.set()
+                if cancel is not None and cancel.wait(.5): cancelled.set()
+                return {'kind': 'auth_status'}
+            with patch.object(bridge.auth, 'check', side_effect=check):
+                bridge.handle({'op': 'auth_check', 'route_id': 'claude'})
+                self.assertTrue(entered.wait(.5))
+                bridge.cancel_all()
+                for thread in bridge.threads: thread.join(1)
+            self.assertTrue(cancelled.is_set())
+
     def test_local_query_never_discovers_or_calls_ai(self):
         with tempfile.TemporaryDirectory() as tmp:
             events = []

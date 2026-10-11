@@ -7,6 +7,7 @@ import threading
 import uuid
 from dataclasses import asdict, replace
 from pathlib import Path
+from backend.auth import AuthController
 from backend.protocol import MAX_BYTES, parse_request
 from backend.registry import Registry
 from backend.search import search
@@ -18,6 +19,9 @@ class Bridge:
         self.state = State(root)
         self.emit = emit
         self.registry = Registry()
+        self.auth = AuthController()
+        self.auth_checking = False
+        self.auth_cancel = threading.Event()
         self.active = {}
         self.results = {}
         self.lock = threading.RLock()
@@ -63,6 +67,17 @@ class Bridge:
                 if not settings['ai_enabled']:
                     self.cancel_all()
                 self.emit({'kind': 'settings', 'settings': settings})
+            elif op == 'auth_login':
+                self.auth.launch(message.get('route_id'))
+                self.emit({'kind': 'auth_opened', 'text': 'Complete sign-in in the terminal/browser, then select Check again.'})
+            elif op == 'auth_check':
+                route = message.get('route_id')
+                if route not in {'claude', 'codex'}:
+                    raise ValueError('Unsupported sign-in route')
+                if not self.auth_checking:
+                    self.auth_checking = True
+                    self.auth_cancel = threading.Event()
+                    self._start_worker(self._check_auth, (route, self.auth_cancel))
             elif op == 'discover':
                 with self.lock:
                     if self.discovering:
@@ -120,6 +135,15 @@ class Bridge:
         self.threads.append(thread)
         thread.start()
 
+    def _check_auth(self, route, cancel):
+        try:
+            self.emit(self.auth.check(route, cancel))
+        except (ValueError, OSError):
+            self.emit({'kind': 'auth_status', 'route_id': route, 'signed_in': False,
+                       'text': 'Provider CLI is unavailable; install it before signing in.'})
+        finally:
+            self.auth_checking = False
+
     def _discover(self, request_id):
         try:
             event = {'kind': 'providers', 'request_id': request_id,
@@ -158,6 +182,7 @@ class Bridge:
                        'text': 'Provider request failed' if terminal == 'error' and not cancel.is_set() else ''})
 
     def cancel_all(self):
+        self.auth_cancel.set()
         with self.lock:
             for cancel in self.active.values():
                 cancel.set()

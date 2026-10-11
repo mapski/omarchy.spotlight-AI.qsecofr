@@ -16,3 +16,7 @@ Run offline checks from this directory:
 The canonical repository remains private until explicit 1.0 public-release approval. No push or public release has occurred.
 
 On VM333, press **Super+Ctrl+M**. Settings edits search folders; Recent reopens saved conversations. AI remains opt-in. An unavailable saved model stays disabled until discovery verifies it.
+
+### Claude and Codex sign-in
+
+Enable AI, choose Claude or Codex, and select **Sign in** to open its native terminal/browser login. Reopen the palette and use **Check again** afterward. No tokens are collected by the plugin. Sign-in status and inference readiness are separate: both CLI inference routes remain disabled while the configuration/tool-isolation gaps in [provider readiness](docs/providers.md) are resolved. Live inference tests remain pending.

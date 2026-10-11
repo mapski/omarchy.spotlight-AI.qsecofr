@@ -5,8 +5,8 @@
 | LM Studio | Loopback :1234, loaded-model discovery and streaming | Live server version, locality and inference |
 | llama.cpp | Loopback :8080, loaded-model discovery, autoload=false on chat | Live server mode/version and inference |
 | Ollama | Loopback :11434, installed GGUF/local metadata filter, running-model query, chat | Live locality and inference |
-| Codex | Detected; disabled | No-tools, context and history isolation |
-| Claude | Mock no-tools/context/hooks/session checks passed; disabled | Existing sign-in and managed-policy isolation; tested bare mode requires API-key auth |
+| Codex | Native sign-in/check flow; inference disabled | Mock profile leaves request_user_input advertised; production config/model/auth isolation still pending |
+| Claude | Native sign-in/check flow; inference disabled | Non-bare mock passed; managed hooks and credential helper demonstrably execute |
 | Grok | Detected; disabled | Full no-tools, context, fallback and persistence controls |
 | Hermes | Detected; disabled | Full no-tools, context, fallback and persistence controls |
 | Pi | Mock tool/context/extension/session checks passed; disabled | Credential commands still execute; isolated authentication/configuration design required |
@@ -30,3 +30,20 @@ Claude was tested against a synthetic loopback Anthropic-compatible HTTP fixture
 Reproducible manual fixture scripts are tests/manual/pi_isolation.py and tests/manual/claude_isolation.py. They create temporary homes and mock servers; never supply real credentials. They are separate from the unit suite and report measured outcomes for the installed CLI. No real model or cloud inference was invoked.
 
 Codex exec's read-only sandbox still permits command execution; no complete no-tools profile was established. Grok exposes tool allowlists and no-subagents but extension/context/history suppression remains unverified. Hermes safe-mode suppresses customization but complete no-tools, fallback and transcript suppression remains unverified. These are explicit blocked gates, not passing adapters.
+
+## Native sign-in continuation — 2026-10-11
+
+Choose Claude or Codex in the palette, then **Sign in**. The app opens Foot with the provider's fixed native login command and dismisses the palette so keyboard input reaches the terminal/browser. Reopen with Super+Ctrl+M and select **Check again** after authorization. Existing CLI sign-in stays in the CLI's own storage; no credential files are read or copied. Closing the palette cancels a pending status check; the interactive login terminal stays user-controlled. Opening login is explicit, never part of passive discovery.
+
+Status output is bounded, parsed and discarded; only a boolean and generic guidance reach the UI. Currently a positive check recognizes first-party Claude subscription or Codex ChatGPT sign-in, not API-key/custom-backend modes. A failure or timeout means not confirmed, not proof the account is signed out. Native authentication can still be subject to administrator policy. Authentication never enables inference by itself.
+
+The launcher removes inherited API keys, endpoint overrides, proxy/helper/runtime injection variables, preserves the desktop session, and invokes fixed argument arrays without a shell. The Codex mise shim is resolved to its existing native installation without running mise or bootstrapping a package. Normal user authentication commands may load provider configuration; this is separate from, and does not establish, a safe inference profile.
+
+### Measured remaining gaps
+
+- **Claude 2.1.296:** removing `--bare` while retaining safe-mode, restricted, empty tools, empty settings sources, explicit disableAllHooks/apiKeyHelper overrides, empty strict MCP and no-session-persistence passed the synthetic HTTP tool/context/user-hook/user-helper/session test. This keeps native OAuth eligible, but is not authenticated inference evidence.
+- **Managed Claude policy:** a temporary bubblewrap mount containing synthetic managed-settings.json reproduced **both startup-hook and credential-helper execution**, despite those flags. Two loopback mock requests, no model engine, no real credentials. `tests/manual/claude_managed_policy.py` asserts this known failure so an upstream behavior change requires re-review. The fixture does not modify system policy. Do not suppress real administrator policy to enable this route.
+- **Codex 0.162.1:** ignore-user-config, ignore-rules, ephemeral, no project documents, disabled web search/shell/unified-exec/snapshot/hooks/plugins/skills/images/multi-agent/goals/sleep removed the dangerous advertised tools in the synthetic fixture. **request_user_input remains**, even with collaboration_modes disabled; no context sentinel or session JSONL was observed. `tests/manual/codex_isolation.py` records that inventory, not a passing all-tools-disabled assertion. The fixture does not yet establish hostile tool-call rejection or production auth/config/model discovery isolation.
+- VM native status checks reported neither first-party sign-in confirmed. Live inference remains explicitly deferred. Both execution routes therefore remain disabled; local search and native sign-in actions are usable.
+
+References refreshed: [Codex CLI](https://learn.chatgpt.com/docs/codex/cli), [Codex configuration](https://learn.chatgpt.com/docs/config-file/config-reference), [Claude settings precedence](https://code.claude.com/docs/en/settings). Installed-version mock evidence, rather than documentation alone, determines readiness.

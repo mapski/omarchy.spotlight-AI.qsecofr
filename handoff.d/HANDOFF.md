@@ -82,3 +82,9 @@ The official guides are living documents and take precedence over this handoff. 
 - [LM Studio local server](https://lmstudio.ai/docs/developer/core/server)
 
 Recheck changing upstream docs/source before acting; these references describe research used during architecture, not proof of current installed behavior.
+
+## Latest native sign-in continuation — 2026-10-11
+
+Native Claude/Codex Sign in and Check again controls implemented. Foot opens fixed native auth command, palette releases focus; bounded status checks are cancellable and sanitized. Codex mise shim resolved without executing mise. 42 tests pass and VM manifest/QML validation passes. Inference remains disabled: Claude managed-policy fixture executes hooks and credential helper; Codex isolated mock still advertises request_user_input. See docs/providers.md for reproducible scripts and exact evidence. User requested built-in continuity and linked the official Codex CLI guide; do not ask them to manually run login as the normal app flow. No credentials copied, no live inference, no push.
+
+Claude native login has now been opened from the palette on VM333; browser is active and palette hidden. Do not inspect browser authorization contents. User completes login, then reopens and checks status. Both CLI inference gates remain closed regardless of successful sign-in.

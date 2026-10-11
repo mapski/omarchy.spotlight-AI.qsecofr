@@ -24,6 +24,16 @@ class RunnerTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             list(self.run_python('raise SystemExit(3)'))
 
+    def test_explicit_environment_cwd_and_private_status_capture(self):
+        import tempfile
+        with tempfile.TemporaryDirectory() as cwd:
+            result = b''.join(stream_process([sys.executable, '-c',
+                'import os,sys; print(os.getcwd()); print(os.environ.get("SYNTHETIC")); print("status", file=sys.stderr)'],
+                b'', threading.Event(), cwd=cwd, env={'SYNTHETIC': 'isolated'}, include_stderr=True))
+            self.assertIn(cwd.encode(), result)
+            self.assertIn(b'isolated', result)
+            self.assertIn(b'status', result)
+
     def test_cancel_before_launch(self):
         cancel = threading.Event()
         cancel.set()

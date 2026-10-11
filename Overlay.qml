@@ -18,6 +18,8 @@ Item {
   property bool aiEnabled: false
   property bool busy: false
   property bool discovering: false
+  property bool checkingAuth: false
+  readonly property string authRoute: provider.currentIndex >= 0 ? providers[provider.currentIndex].route_id : ""
   property string answer: ""
   property string status: "Local search · AI is optional"
   property string queryId: ""
@@ -117,7 +119,7 @@ Item {
     stdinEnabled: true
     running: true
     onStarted: { root.send({op: "settings"}); root.send({op: "history"}) }
-    onExited: { root.discovering = false; root.busy = false; root.status = "Backend stopped; reopen after checking installation" }
+    onExited: { root.discovering = false; root.checkingAuth = false; root.busy = false; root.status = "Backend stopped; reopen after checking installation" }
     stdout: SplitParser {
       onRead: data => {
         try {
@@ -134,6 +136,8 @@ Item {
             }
           }
           else if (event.kind === "results" && event.request_id === root.queryId) { root.results = event.results; root.selection = 0 }
+          else if (event.kind === "auth_opened") { root.status = event.text; root.dismiss() }
+          else if (event.kind === "auth_status") { root.checkingAuth = false; root.status = event.route_id + ": " + event.text }
           else if (event.kind === "discovery_error") { root.discovering = false; root.status = event.text }
           else if (event.kind === "providers") { root.discovering = false; root.providers = event.providers; root.restoreSelection(); root.status = "Provider availability refreshed" }
           else if (event.kind === "activated") root.dismiss()
@@ -248,6 +252,13 @@ Item {
           }
         }
         Label { Layout.fillWidth: true; visible: input.text.indexOf("ai:") === 0; text: root.destination; elide: Text.ElideMiddle }
+        RowLayout {
+          visible: (input.text.indexOf("ai:") === 0 || root.aiEnabled) && (root.authRoute === "claude" || root.authRoute === "codex")
+          Button { text: "Sign in"; visible: root.authRoute === "claude" || root.authRoute === "codex"; enabled: !root.busy && !root.checkingAuth
+            onClicked: root.send({op: "auth_login", route_id: root.authRoute}) }
+          Button { text: root.checkingAuth ? "Checking…" : "Check again"; visible: root.authRoute === "claude" || root.authRoute === "codex"; enabled: !root.busy && !root.checkingAuth
+            onClicked: { root.checkingAuth = true; root.send({op: "auth_check", route_id: root.authRoute}) } }
+        }
         RowLayout {
           visible: input.text.indexOf("ai:") === 0
           Button { text: "New chat"; enabled: !root.busy; onClicked: root.newChat() }

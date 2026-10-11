@@ -8,6 +8,9 @@ with tempfile.TemporaryDirectory(prefix='model-search-claude-mock-') as tmp:
     config=project/'.claude';config.mkdir()
     (project/'CLAUDE.md').write_text('MUST_NOT_LOAD_MODEL_SEARCH')
     (config/'settings.json').write_text(json.dumps({'hooks':{'SessionStart':[{'hooks':[{'type':'command','command':'touch '+str(hook_marker)}]}]}}))
+    helper_marker=root/'credential-helper-ran'
+    userconfig=root/'.claude';userconfig.mkdir()
+    (userconfig/'settings.json').write_text(json.dumps({'apiKeyHelper':'touch '+str(helper_marker)+'; printf synthetic-not-a-secret'}))
     requests=[]
     class Handler(BaseHTTPRequestHandler):
         def log_message(self,*args): pass
@@ -33,14 +36,15 @@ with tempfile.TemporaryDirectory(prefix='model-search-claude-mock-') as tmp:
     server=ThreadingHTTPServer(('127.0.0.1',0),Handler)
     thread=threading.Thread(target=server.serve_forever,daemon=True);thread.start()
     env={'PATH':os.environ['PATH'],'HOME':str(root),'ANTHROPIC_API_KEY':'synthetic-not-a-secret','ANTHROPIC_BASE_URL':'http://127.0.0.1:'+str(server.server_port),'CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC':'1'}
-    argv=[shutil.which('claude') or 'claude','--print','--bare','--safe-mode','--restricted','--tools','','--strict-mcp-config','--mcp-config','{"mcpServers":{}}','--no-session-persistence','--model','synthetic','--output-format','json','--system-prompt','Answer questions only.']
+    argv=[shutil.which('claude') or 'claude','--print','--safe-mode','--setting-sources','','--settings','{"disableAllHooks":true,"apiKeyHelper":""}','--restricted','--tools','','--strict-mcp-config','--mcp-config','{"mcpServers":{}}','--no-session-persistence','--model','synthetic','--output-format','json','--system-prompt','Answer questions only.']
     proc=subprocess.Popen(argv,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True,cwd=project,env=env,start_new_session=True)
     timed_out=False
     try: out,err=proc.communicate('Synthetic offline safety test',timeout=25)
     except subprocess.TimeoutExpired:
         timed_out=True;os.killpg(proc.pid,signal.SIGKILL);out,err=proc.communicate()
     finally: server.shutdown();server.server_close();thread.join()
-    print(json.dumps({'requests':len(requests),'tools_advertised':any(bool(p.get('tools')) for p in requests),'context_sentinel_sent':any('MUST_NOT_LOAD_MODEL_SEARCH' in json.dumps(p) for p in requests),'tool_executed':marker.exists(),'hook_executed':hook_marker.exists(),'session_files':len(list(root.rglob('*.jsonl'))),'exit_code':proc.returncode,'timeout':timed_out,'scope':'synthetic local HTTP fixture only; no inference engine or real credentials'}))
+    print(json.dumps({'requests':len(requests),'tools_advertised':any(bool(p.get('tools')) for p in requests),'context_sentinel_sent':any('MUST_NOT_LOAD_MODEL_SEARCH' in json.dumps(p) for p in requests),'tool_executed':marker.exists(),'hook_executed':hook_marker.exists(),'credential_helper_executed':helper_marker.exists(),'session_files':len(list(root.rglob('*.jsonl'))),'exit_code':proc.returncode,'timeout':timed_out,'scope':'synthetic local HTTP fixture only; no inference engine or real credentials'}))
     assert requests and proc.returncode == 0 and not timed_out, 'CLI fixture did not complete'
     assert not any(p.get('tools') or 'MUST_NOT_LOAD_MODEL_SEARCH' in json.dumps(p) for p in requests), 'Unexpected tools or workspace context'
+    assert not helper_marker.exists(), 'Credential helper executed'
     assert not marker.exists() and not hook_marker.exists() and not list(root.rglob('*.jsonl')), 'Unexpected execution or session persistence'

@@ -5,8 +5,8 @@ from backend.providers.local import LocalAdapter
 
 # Installed-version review: see docs/providers.md. Presence is never readiness.
 CLI_BLOCKERS = {
-    'codex': 'Disabled: exec sandbox still permits commands; complete no-tools isolation unverified',
-    'claude': 'Disabled: mock no-tools checks passed; existing sign-in and managed-policy isolation pending',
+    'codex': 'Disabled: isolated mock still advertises request_user_input; full no-tools profile pending',
+    'claude': 'Disabled: managed-policy fixture executes hooks and credential helpers; isolation required',
     'grok': 'Disabled: tool allowlist found; extension, context and session suppression unverified',
     'hermes': 'Disabled: safe-mode found; no-tools, fallback and transcript suppression unverified',
     'pi': 'Disabled: mock tool isolation passed; credential commands still execute; isolated auth design required',
