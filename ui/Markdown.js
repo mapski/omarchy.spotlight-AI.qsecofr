@@ -225,4 +225,3 @@ function parseMarkdown(text, codeColor, dimColor) {
   }
   return blocks
 }
-
