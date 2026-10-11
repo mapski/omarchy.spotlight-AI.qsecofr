@@ -20,3 +20,12 @@ On VM333, press **Super+Ctrl+M**. Settings edits search folders; Recent reopens 
 ### Claude and Codex sign-in
 
 Enable AI, choose Claude or Codex, and select **Sign in** to open its native terminal/browser login. Reopen the palette and use **Check again** afterward. No tokens are collected by the plugin. Sign-in status and inference readiness are separate: both CLI inference routes remain disabled while the configuration/tool-isolation gaps in [provider readiness](docs/providers.md) are resolved. Live inference tests remain pending.
+
+
+### Direct ChatGPT connection
+
+On the authorized lab VM, press **Super+Ctrl+M**, enable AI, choose **chatgpt**, then **Continue with ChatGPT**. Complete consent in your browser. Reopen the palette and refresh providers, then explicitly choose a model. This separate route uses your ChatGPT plan through the documented public API; it does not run Codex CLI. Eligibility and actual sign-in remain to be verified by the user. Live inference tests remain pending.
+
+**Add account** creates another registration; the account picker distinguishes registrations even with the same email. **Cancel sign-in** stops a pending attempt. **Sign out** revokes the refresh token when possible and clears local tokens; a revocation failure is reported so you can disconnect the app in ChatGPT Settings. Tokens are stored separately from history under `~/.local/state/omarchy-model-search/chatgpt-auth` (or XDG_STATE_HOME). Clear history does not sign you out. Plugin removal preserves state: sign out first if disconnecting, and remove the state directory yourself only if you also want to erase saved settings/history/registration identities.
+
+Install `python-pyjwt` and `python-cryptography` using the supported Omarchy package workflow on an authorized machine. For isolated development environments, use `requirements.txt`. Credentials remain backend-only in owner-restricted files; this is not encrypted storage or protection against another process running as your user. Claude and Codex CLI execution remain blocked.

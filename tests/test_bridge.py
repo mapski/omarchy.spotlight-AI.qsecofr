@@ -168,3 +168,31 @@ class BridgeTests(unittest.TestCase):
                 ids.append(events[-1]['conversation_id'])
             self.assertNotEqual(*ids)
             self.assertEqual(len(bridge.state.history()), 2)
+
+    def test_account_io_never_blocks_input_thread(self):
+        import threading
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as tmp:
+            events=[];bridge=Bridge(Path(tmp),events.append);entered=threading.Event();release=threading.Event()
+            def blocked():
+                entered.set();release.wait(1)
+                return {'active':'','accounts':[]}
+            with patch.object(bridge.chatgpt,'accounts',side_effect=blocked):
+                bridge.handle({'op':'chatgpt_accounts'})
+                self.assertTrue(entered.wait(.5))
+                bridge.handle({'op':'search','request_id':'live','text':''})
+                self.assertTrue(any(e.get('request_id')=='live' for e in events))
+                release.set()
+                for thread in bridge.threads:thread.join(1)
+
+    def test_cancel_invalidates_queued_chatgpt_login(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as tmp:
+            bridge=Bridge(Path(tmp),lambda event:None)
+            queued=[]
+            with patch.object(bridge,'_start_worker',side_effect=lambda target,args:queued.append((target,args))):
+                bridge.handle({'op':'auth_login','route_id':'chatgpt'})
+                bridge.handle({'op':'auth_cancel'})
+            with patch('backend.main.subprocess.Popen') as browser, patch('backend.chatgpt_auth.HTTPServer',side_effect=OSError('fixture')) as server:
+                target,args=queued[0];target(*args)
+                browser.assert_not_called();server.assert_not_called()

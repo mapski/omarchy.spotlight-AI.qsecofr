@@ -3,6 +3,12 @@
 **Updated:** 2026-10-11 (America/Toronto)
 **Stage:** Private prototype implementation and lab validation in progress.
 
+## Direct ChatGPT continuation — 2026-10-11
+
+User approved direct Sign in with ChatGPT. Separate `chatgpt` route now owns public-client OAuth credentials and uses the documented public Responses API with Q&A-only payloads. Claude and Codex CLI remain blocked; live inference remains pending. Active implementation remains in `/home/mp/.codex/worktrees/model-search/Omarchy-Model-Search`, branch `codex/model-search`.
+
+68 offline tests pass locally. Review fixed late OAuth completion after cancellation/logout, UI blocking during account operations, and queued login surviving cancellation. VM account UI was visually checked, including keyboard provider selection; no real sign-in started. Read docs/VALIDATION.md and docs/environment.md for final VM results. README documents setup, account selection, sign-out, storage and removal. No push or public release.
+
 ## Latest UI and CLI continuation — 2026-10-11
 
 35 tests pass. Super+Ctrl+M is installed only on VM333 and verified using hardware key injection. UI now has editable roots, saved selections, Recent, destination-bound follow-up, temporary single questions, compact search and responsive theme-aware presentation. Conversation UUIDs prevent restart collisions. Settings-to-search and history keyboard flows passed; original theme/scale and empty roots restored, synthetic data removed.

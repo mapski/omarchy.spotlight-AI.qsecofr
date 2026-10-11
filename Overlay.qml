@@ -73,6 +73,8 @@ Item {
     else dismiss()
   }
   property var results: []
+  property var chatgptAccounts: []
+  property string chatgptActive: ""
   property var providers: []
   property var models: []
   property int selection: 0
@@ -82,6 +84,7 @@ Item {
     root.opened = true
     if (!bridge.running) bridge.running = true
     send({op: "history"})
+    send({op: "chatgpt_accounts"})
     Qt.callLater(function() { input.forceActiveFocus() })
   }
   function close() { root.opened = false; send({op: "cancel"}) }
@@ -136,6 +139,12 @@ Item {
             }
           }
           else if (event.kind === "results" && event.request_id === root.queryId) { root.results = event.results; root.selection = 0 }
+          else if (event.kind === "chatgpt_accounts") {
+            const changed = root.chatgptActive !== event.active
+            root.chatgptAccounts = event.accounts; root.chatgptActive = event.active
+            if (changed) root.send({op: "discover"})
+            accountPicker.currentIndex = event.accounts.findIndex(a => a.id === event.active)
+          }
           else if (event.kind === "auth_opened") { root.status = event.text; root.dismiss() }
           else if (event.kind === "auth_status") { root.checkingAuth = false; root.status = event.route_id + ": " + event.text }
           else if (event.kind === "discovery_error") { root.discovering = false; root.status = event.text }
@@ -252,6 +261,29 @@ Item {
           }
         }
         Label { Layout.fillWidth: true; visible: input.text.indexOf("ai:") === 0; text: root.destination; elide: Text.ElideMiddle }
+        ColumnLayout {
+          visible: root.authRoute === "chatgpt"
+          Layout.fillWidth: true
+          ComboBox {
+            id: accountPicker; Layout.fillWidth: true; model: root.chatgptAccounts; textRole: "label"
+            displayText: count === 0 ? "No ChatGPT account connected" : currentText
+            onActivated: {
+              root.send({op: "chatgpt_select", account_id: root.chatgptAccounts[currentIndex].id})
+              root.conversationId = ""; root.answer = ""; root.models = []
+              root.savedSelection = {}
+            }
+          }
+          RowLayout {
+            Button { text: "Continue with ChatGPT"; enabled: !root.busy
+              onClicked: root.send({op: "auth_login", route_id: "chatgpt", account_id: root.chatgptActive}) }
+            Button { text: "Add account"; enabled: !root.busy
+              onClicked: root.send({op: "auth_login", route_id: "chatgpt"}) }
+            Button { text: "Sign out"; enabled: !root.busy && root.chatgptActive !== ""
+              onClicked: { root.models = []; root.conversationId = ""; root.answer = ""; root.send({op: "auth_logout", route_id: "chatgpt", account_id: root.chatgptActive}) } }
+            Button { text: "Cancel sign-in"; onClicked: root.send({op: "auth_cancel"}) }
+          }
+          Label { text: "Uses your ChatGPT plan · Cloud · Q&A only · Live inference untested"; wrapMode: Text.Wrap; Layout.fillWidth: true }
+        }
         RowLayout {
           visible: (input.text.indexOf("ai:") === 0 || root.aiEnabled) && (root.authRoute === "claude" || root.authRoute === "codex")
           Button { text: "Sign in"; visible: root.authRoute === "claude" || root.authRoute === "codex"; enabled: !root.busy && !root.checkingAuth

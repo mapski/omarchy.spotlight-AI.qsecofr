@@ -4,7 +4,7 @@ import re
 from dataclasses import dataclass
 
 MAX_BYTES = 1024 * 1024
-ROUTES = frozenset({'codex', 'claude', 'grok', 'hermes', 'pi', 'lmstudio', 'llamacpp', 'ollama'})
+ROUTES = frozenset({'chatgpt', 'codex', 'claude', 'grok', 'hermes', 'pi', 'lmstudio', 'llamacpp', 'ollama'})
 
 
 @dataclass(frozen=True)

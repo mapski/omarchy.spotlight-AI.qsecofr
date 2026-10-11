@@ -7,7 +7,9 @@ import threading
 import uuid
 from dataclasses import asdict, replace
 from pathlib import Path
-from backend.auth import AuthController
+from backend.auth import AuthController, clean_environment
+from backend.chatgpt_auth import ChatGPTAuth
+from backend.providers.chatgpt import ChatGPTAdapter
 from backend.protocol import MAX_BYTES, parse_request
 from backend.registry import Registry
 from backend.search import search
@@ -18,7 +20,9 @@ class Bridge:
     def __init__(self, root, emit):
         self.state = State(root)
         self.emit = emit
+        self.chatgpt = ChatGPTAuth(Path(root) / 'chatgpt-auth')
         self.registry = Registry()
+        self.registry.adapters['chatgpt'] = ChatGPTAdapter(self.chatgpt)
         self.auth = AuthController()
         self.auth_checking = False
         self.auth_cancel = threading.Event()
@@ -67,12 +71,26 @@ class Bridge:
                 if not settings['ai_enabled']:
                     self.cancel_all()
                 self.emit({'kind': 'settings', 'settings': settings})
+            elif op == 'chatgpt_accounts':
+                self._start_worker(self._chatgpt_accounts, ())
+            elif op == 'chatgpt_select':
+                self.cancel_all()
+                self.chatgpt.cancel_login()
+                self._start_worker(self._chatgpt_accounts, (message.get('account_id'),))
+            elif op == 'auth_logout':
+                if message.get('route_id') != 'chatgpt': raise ValueError('Unsupported sign-out')
+                self.cancel_all(); self.chatgpt.cancel_login()
+                self._start_worker(self._chatgpt_logout, (message.get('account_id'),))
+            elif op == 'auth_cancel':
+                self.chatgpt.cancel_login()
+            elif op == 'auth_login' and message.get('route_id') == 'chatgpt':
+                self._start_worker(self._chatgpt_login, (message.get('account_id', ''), self.chatgpt.login_generation()))
             elif op == 'auth_login':
                 self.auth.launch(message.get('route_id'))
                 self.emit({'kind': 'auth_opened', 'text': 'Complete sign-in in the terminal/browser, then select Check again.'})
             elif op == 'auth_check':
                 route = message.get('route_id')
-                if route not in {'claude', 'codex'}:
+                if route not in {'claude', 'codex', 'chatgpt'}:
                     raise ValueError('Unsupported sign-in route')
                 if not self.auth_checking:
                     self.auth_checking = True
@@ -137,12 +155,44 @@ class Bridge:
 
     def _check_auth(self, route, cancel):
         try:
-            self.emit(self.auth.check(route, cancel))
-        except (ValueError, OSError):
+            if route == 'chatgpt':
+                account = self.chatgpt.snapshot()
+                self.emit({'kind':'auth_status','route_id':'chatgpt','signed_in':True,'text':'Signed in. Refresh providers; live inference remains untested.'})
+                self.emit(dict(self.chatgpt.accounts(), kind='chatgpt_accounts'))
+            else:
+                self.emit(self.auth.check(route, cancel))
+        except Exception:
             self.emit({'kind': 'auth_status', 'route_id': route, 'signed_in': False,
-                       'text': 'Provider CLI is unavailable; install it before signing in.'})
+                       'text': 'Sign-in not confirmed; use the sign-in controls.'})
         finally:
             self.auth_checking = False
+
+    def _chatgpt_accounts(self, handle=None):
+        try:
+            if handle is not None: self.chatgpt.select(handle)
+            self.emit(dict(self.chatgpt.accounts(), kind='chatgpt_accounts'))
+        except Exception:
+            self.emit({'kind':'auth_status','route_id':'chatgpt','signed_in':False,'text':'Account operation failed; retry.'})
+
+    def _chatgpt_login(self, handle, generation):
+        def browser(url):
+            subprocess.Popen(['gio', 'open', url], cwd='/tmp', env=clean_environment(),
+                stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        try:
+            self.chatgpt.login(browser, self.emit, handle, generation)
+        except Exception:
+            self.emit({'kind':'auth_status','route_id':'chatgpt','signed_in':False,'text':'Sign-in already running or unavailable.'})
+        finally:
+            self.emit(dict(self.chatgpt.accounts(), kind='chatgpt_accounts'))
+
+    def _chatgpt_logout(self, handle):
+        try:
+            confirmed = self.chatgpt.logout(handle)
+            self.emit({'kind':'auth_status','route_id':'chatgpt','signed_in':False,
+                'text':'Signed out.' if confirmed else 'Signed out locally. Remote revocation unconfirmed; disconnect the app in ChatGPT Settings.'})
+            self.emit(dict(self.chatgpt.accounts(), kind='chatgpt_accounts'))
+        except Exception:
+            self.emit({'kind':'auth_status','route_id':'chatgpt','signed_in':False,'text':'Sign-out failed. Retry from account controls.'})
 
     def _discover(self, request_id):
         try:
@@ -208,6 +258,7 @@ def main():
             except (ValueError, UnicodeError):
                 emit({'kind': 'error', 'text': 'Invalid JSON message'})
     finally:
+        bridge.chatgpt.cancel_login()
         bridge.cancel_all()
         for thread in bridge.threads:
             thread.join(timeout=6)

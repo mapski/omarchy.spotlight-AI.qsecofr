@@ -15,3 +15,8 @@ Running hermes --help unexpectedly invoked the installed Omarchy lazy bootstrap 
 Work lives in the attached codex/model-search worktree. Merge 02fb89d retains both histories and the remote MIT license. No push or public release.
 
 Additional confirmed snapshot: model-search-preui-20261011. VM bindings.lua contains the dedicated Model Search key; remove its two-line marked block to undo. No prior binding was replaced.
+
+
+Direct OAuth continuation: installed python-pyjwt 2.13.0-1 on VM333; python-cryptography 50.0.1-1 was already present. Snapshot model-search-preoauth-20261011 was created after dependency installation and before deploying the direct ChatGPT build. The initial snapshot command failed due argument quoting; the corrected command succeeded. No other custom backup was made. Official removal generated its own standard plugin backup during the lifecycle test.
+
+The final direct ChatGPT build was deployed only to the approved mp.emojis clone. All 68 offline tests passed using VM Python. Manifest and QML validation passed; account controls and empty-account state visually checked in the current Ethereal theme at 1280x800/100%. Hardware keyboard selection, dedicated shortcut, disable/re-enable, restart and removal/restoration passed. No real ChatGPT sign-in or inference was initiated, no provider credentials were copied, and no daily desktop dependency/plugin changes occurred.

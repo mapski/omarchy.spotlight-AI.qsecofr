@@ -67,3 +67,14 @@ Corrected tests/manual/codex_isolation.py to inventory additional_tools input it
 ## Codex configuration and execution continuation — 2026-10-11
 
 Expanded the manual probe with harmless unsolicited patch/JavaScript responses and temporary user/system MCP configurations. On VM333 Codex0.162.1, embedded JavaScript really executes despite extra opt-outs; read-only rejects the tested patch write. ignore-user-config skips user MCP but system MCP still starts, even with mcp_servers={}; named disabling works only for the named server. Internal deny-all ToolPolicy is not exposed by inspected public interfaces; strict-config rejects its proposed TOML key. See docs/providers.md for exact scope, reproduction, and required integration boundary. Codex stays blocked, Claude stays blocked, all live inference pending. No production code, VM system configuration, installed CLI, credentials, or plugin deployment changed.
+
+
+## Direct ChatGPT integration — 2026-10-11
+
+68 offline tests pass in the isolated host environment and on VM333's distribution Python/PyJWT/cryptography. Synthetic fixtures cover PKCE/state/nonce, JWT signature/issuer/audience/expiry, required scopes, reauthentication identity binding, atomic private storage, refresh rotation, logout, HTTP callback shutdown, fixed destinations, SSE parsing, explicit account/model selection, no-tools payloads, tool/incomplete response rejection and responsive local search. No real OAuth consent, account-model discovery or live inference occurred.
+
+Focused independent review found and verified fixes for three races: late token exchange after cancel/logout, account I/O blocking the UI input loop, and a queued login opening after cancellation. Regression tests accompany all three. This focused review is not final release certification.
+
+Final VM manifest validation and qmllint (Overlay.qml and ui/Answer.qml with installed qs metadata) exit zero; existing dynamic-theme and shell metadata warnings remain. An initial lint invocation used a nonexistent AnswerView.qml path; rerunning with the actual component passed. ChatGPT controls and empty-account state fit at 1280x800, keyboard provider selection works, and Super+Ctrl+M opens the restored final build. Disable/re-enable, shell restart and removal/re-clone passed; builtin emojis were restored by removal. Plugin-specific journal inspection showed reload notices and no error; unrelated shell/plugin warnings remain. No second shell was started.
+
+Live authentication, refresh/revocation against the real service, actual model discovery, streaming/inference, IME acceptance and final release packaging/license audit remain pending. Claude and Codex CLI execution remain blocked. No push/public release or daily-desktop installation.

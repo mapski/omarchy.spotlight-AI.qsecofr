@@ -1,0 +1,2 @@
+# Direct ChatGPT ID-token validation; use distro packages on Omarchy.
+PyJWT[crypto]>=2.10,<3
