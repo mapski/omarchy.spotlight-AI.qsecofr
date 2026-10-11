@@ -6,10 +6,12 @@ User authorized snapshots instead of other backups. Disk snapshots model-search-
 
 Official clone: omarchy plugin clone omarchy.emojis produced mp.emojis, clonedFrom omarchy.emojis. Development files were copied into that VM clone without source symlinks. Disable and re-enable succeeded; disabling restored builtin emoji availability. The existing shell was restarted after new files hit the installed shell's QML cache issue. No second Quickshell process was launched.
 
-Manifest validation passed. qmllint exits zero with an external temporary qs import mapping; warnings remain for PanelWindow, QProcess exit metadata and dynamic theme properties. This is not warning-free lint. Updated overlay opened and displayed the Firefox application result at 1280x800. Continuation verified removal/restoration, official re-clone, summon/hide and Escape clear/close. The existing emoji shortcut did not summon the clone in automation; shortcut and scale/theme/streaming acceptance remain pending.
+Manifest validation passed. qmllint exits zero with an external temporary qs import mapping; warnings remain for PanelWindow, QProcess exit metadata and dynamic theme properties. This is not warning-free lint. Updated overlay opened and displayed the Firefox application result at 1280x800. Continuation verified removal/restoration, official re-clone, summon/hide and Escape clear/close. Super+Ctrl+M now targets mp.emojis and passed hardware-key injection. Light/dark and effective 100/125/160 percent scales checked; original theme and scale restored. Live streaming/IME acceptance remains pending.
 
 The VM has no llama-server, ollama or lms command. User explicitly requested offline adapters be finished and live inference tests remain pending. No models or model servers were installed. CLI command presence does not establish safe Q&A execution; all CLI routes remain disabled.
 
 Running hermes --help unexpectedly invoked the installed Omarchy lazy bootstrap and installed Hermes/Python 3.13 in the VM. This side effect was disclosed and is covered by the predevelopment snapshot.
 
 Work lives in the attached codex/model-search worktree. Merge 02fb89d retains both histories and the remote MIT license. No push or public release.
+
+Additional confirmed snapshot: model-search-preui-20261011. VM bindings.lua contains the dedicated Model Search key; remove its two-line marked block to undo. No prior binding was replaced.

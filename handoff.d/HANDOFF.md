@@ -3,7 +3,13 @@
 **Updated:** 2026-10-11 (America/Toronto)
 **Stage:** Private prototype implementation and lab validation in progress.
 
-## Current continuation — 2026-10-11
+## Latest UI and CLI continuation — 2026-10-11
+
+35 tests pass. Super+Ctrl+M is installed only on VM333 and verified using hardware key injection. UI now has editable roots, saved selections, Recent, destination-bound follow-up, temporary single questions, compact search and responsive theme-aware presentation. Conversation UUIDs prevent restart collisions. Settings-to-search and history keyboard flows passed; original theme/scale and empty roots restored, synthetic data removed.
+
+Pi and Claude passed isolated mock-HTTP tool/context/session tests, with no inference engines or real credentials. Pi credential-command execution remains a blocker; Claude bare-mode does not reuse OAuth. All five CLI routes remain disabled with specific reasons. Live inference remains pending by user request. See docs/providers.md and docs/VALIDATION.md. Remaining acceptance: authenticated CLI isolation, live provider/streaming, IME, packaging/license and public-release approval. No push.
+
+## Earlier implementation continuation — 2026-10-11
 
 Implementation and inline plan execution were approved. Active worktree: /home/mp/.codex/worktrees/model-search/Omarchy-Model-Search, branch codex/model-search. VM333 is authorized; access is through PX1 QEMU guest agent as mp. Never record the supplied lab password. Daily desktop integration remains unauthorized.
 

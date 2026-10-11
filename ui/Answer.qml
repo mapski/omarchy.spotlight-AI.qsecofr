@@ -15,10 +15,12 @@ Column {
       selectByMouse: true
       wrapMode: TextEdit.Wrap
       color: root.foreground
-      font.pixelSize: 15
-      font.family: modelData.kind === "code" ? "monospace" : "sans-serif"
+      font.pixelSize: modelData.kind === "h" ? (modelData.level < 3 ? 20 : 17) : 15
+      font.bold: modelData.kind === "h"
+      topPadding: (modelData.gap || 0) * 3
+      font.family: (modelData.kind === "code" || modelData.kind === "table") ? "monospace" : "sans-serif"
       textFormat: modelData.kind === "code" || modelData.kind === "table" ? TextEdit.PlainText : TextEdit.RichText
-      text: modelData.text || modelData.html || "────────"
+      text: modelData.kind === "li" ? modelData.marker + " " + modelData.html : (modelData.text || modelData.html || "────────")
       onLinkActivated: link => { if (/^https?:\/\//.test(link)) Qt.openUrlExternally(link) }
     }
   }

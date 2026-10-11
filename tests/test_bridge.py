@@ -93,3 +93,61 @@ class BridgeTests(unittest.TestCase):
             bridge.handle({'op': 'discover', 'request_id': 'd2'})
             self.assertTrue(ready.wait(1))
             self.assertEqual(events[-1]['kind'], 'providers')
+
+    def test_settings_update_preserves_opt_in_and_rejects_invalid_selection(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            bridge = Bridge(Path(tmp), lambda e: None)
+            bridge.handle({'op': 'configure', 'roots': [tmp], 'selection': {'route_id': 'ollama', 'model_id': 'demo', 'backend_id': ''}})
+            settings = bridge.state.load_settings()
+            self.assertEqual(settings['roots'], [tmp])
+            self.assertFalse(settings['ai_enabled'])
+            self.assertEqual(settings['selection']['model_id'], 'demo')
+            bridge.handle({'op': 'configure', 'roots': ['relative'], 'selection': {}})
+            self.assertEqual(bridge.state.load_settings(), settings)
+
+    def test_followup_uses_saved_context_only_with_same_destination(self):
+        from backend.protocol import ResponseEvent
+        class Fake:
+            def __init__(self): self.requests = []
+            def stream(self, request, cancel):
+                self.requests.append(request)
+                yield ResponseEvent(request.request_id, 'delta', 'Synthetic answer')
+                yield ResponseEvent(request.request_id, 'done')
+        with tempfile.TemporaryDirectory() as tmp:
+            events = []
+            bridge = Bridge(Path(tmp), events.append)
+            fake = Fake()
+            bridge.registry.adapters['ollama'] = fake
+            bridge.state.save_settings({'ai_enabled': True, 'roots': []})
+            def ask(rid, cid='', model='demo', temporary=False):
+                bridge.handle({'op': 'ask', 'request': {'version': 1, 'request_id': rid, 'route_id': 'ollama', 'model_id': model, 'prompt': 'Synthetic question', 'conversation_id': cid, 'temporary': temporary}})
+                for worker in bridge.threads: worker.join(2)
+            ask('a1')
+            conversation = events[-1]['conversation_id']
+            ask('a2', conversation)
+            self.assertEqual(len(fake.requests), 2)
+            self.assertEqual(len(fake.requests[-1].history), 2)
+            self.assertEqual(len(bridge.state.history()[conversation]), 4)
+            ask('a3', conversation, 'another')
+            self.assertEqual(len(fake.requests), 2)
+            ask('a4', temporary=True)
+            self.assertNotIn('a4', bridge.state.history())
+
+    def test_new_chat_request_ids_cannot_merge_after_restart(self):
+        from backend.protocol import ResponseEvent
+        class Fake:
+            def stream(self, request, cancel):
+                yield ResponseEvent(request.request_id, 'delta', 'answer')
+                yield ResponseEvent(request.request_id, 'done')
+        with tempfile.TemporaryDirectory() as tmp:
+            ids = []
+            for _ in range(2):
+                events = []
+                bridge = Bridge(Path(tmp), events.append)
+                bridge.state.save_settings({'ai_enabled': True, 'roots': []})
+                bridge.registry.adapters['ollama'] = Fake()
+                bridge.handle({'op': 'ask', 'request': {'version': 1, 'request_id': 'a1', 'route_id': 'ollama', 'model_id': 'demo', 'prompt': 'New chat'}})
+                for worker in bridge.threads: worker.join(2)
+                ids.append(events[-1]['conversation_id'])
+            self.assertNotEqual(*ids)
+            self.assertEqual(len(bridge.state.history()), 2)

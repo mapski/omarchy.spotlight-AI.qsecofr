@@ -14,6 +14,9 @@ class Request:
     model_id: str
     prompt: str
     backend_id: str = ''
+    conversation_id: str = ''
+    temporary: bool = False
+    history: tuple = ()
 
 
 @dataclass(frozen=True)
@@ -31,7 +34,7 @@ def parse_request(raw: str) -> Request:
     except (UnicodeError, json.JSONDecodeError, RecursionError) as exc:
         raise ValueError('Invalid request encoding') from exc
     required = {'version', 'request_id', 'route_id', 'model_id', 'prompt'}
-    if not isinstance(data, dict) or not required.issubset(data) or set(data) - required - {'backend_id'}:
+    if not isinstance(data, dict) or not required.issubset(data) or set(data) - required - {'backend_id', 'conversation_id', 'temporary'}:
         raise ValueError('Invalid request fields')
     if type(data['version']) is not int or data['version'] != 1:
         raise ValueError('Unsupported protocol version')
@@ -47,4 +50,10 @@ def parse_request(raw: str) -> Request:
         raise ValueError('Invalid selection')
     if len(data['model_id']) > 256 or len(backend) > 256 or (data['route_id'] == 'pi' and not backend.strip()):
         raise ValueError('Explicit model and backend required')
-    return Request(data['request_id'], data['route_id'], data['model_id'], data['prompt'], backend)
+    conversation = data.get('conversation_id', '')
+    temporary = data.get('temporary', False)
+    if not isinstance(conversation, str) or (conversation and not re.fullmatch(r'[A-Za-z0-9_.-]{1,128}', conversation)) or type(temporary) is not bool:
+        raise ValueError('Invalid conversation options')
+    if temporary and conversation:
+        raise ValueError('Temporary chats cannot load saved context')
+    return Request(data['request_id'], data['route_id'], data['model_id'], data['prompt'], backend, conversation, temporary)

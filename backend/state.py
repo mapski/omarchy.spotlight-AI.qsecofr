@@ -4,6 +4,7 @@ import os
 import secrets
 import stat
 from pathlib import Path
+from backend.protocol import ROUTES
 
 MAX_HISTORY = 10 * 1024 * 1024
 MAX_TURN = 1024 * 1024
@@ -91,8 +92,16 @@ class State:
         if type(settings.get('ai_enabled', False)) is not bool:
             raise ValueError('Invalid AI opt-in')
         roots = settings.get('roots', [])
-        if not isinstance(roots, list) or any(not isinstance(p, str) or not Path(p).is_absolute() for p in roots):
+        if not isinstance(roots, list) or len(roots) > 32 or any(not isinstance(p, str) or not Path(p).is_absolute() for p in roots):
             raise ValueError('Invalid search roots')
+        selection = settings.get('selection', {})
+        if not isinstance(selection, dict) or set(selection) - {'route_id', 'model_id', 'backend_id'}:
+            raise ValueError('Invalid saved selection')
+        if selection:
+            if selection.get('route_id') not in ROUTES or not isinstance(selection.get('model_id'), str) or not selection['model_id'].strip():
+                raise ValueError('Invalid saved model')
+            if any(not isinstance(v, str) or len(v) > 256 or any(ord(c) < 32 for c in v) for v in selection.values()):
+                raise ValueError('Invalid saved selection')
 
     def save_settings(self, settings):
         self._validate_settings(settings)
@@ -122,3 +131,17 @@ class State:
 
     def clear_history(self):
         self._write('history.json', {})
+
+    def save_exchange(self, request, answer):
+        conversation = request.conversation_id or request.request_id
+        history = self.history()
+        turns = history.pop(conversation, [])
+        destination = {'route_id': request.route_id, 'model_id': request.model_id, 'backend_id': request.backend_id}
+        history[conversation] = [*turns, dict(destination, role='user', text=request.prompt), dict(destination, role='assistant', text=answer)]
+        while len(history) > 25 or len(json.dumps(history, ensure_ascii=False).encode()) > MAX_HISTORY:
+            if len(history) > 1:
+                del history[next(iter(history))]
+            else:
+                # Keep complete user/assistant exchanges together.
+                del history[conversation][:2]
+        self._write('history.json', history)

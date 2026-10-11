@@ -82,7 +82,9 @@ class LocalAdapter:
             return
         if request.route_id != self.route_id or request.model_id not in {m.id for m in status.models}:
             raise ValueError('Selected model is unavailable')
-        payload = {'model': request.model_id, 'messages': [{'role': 'user', 'content': request.prompt}], 'stream': True}
+        payload = {'model': request.model_id, 'messages': [*request.history, {'role': 'user', 'content': request.prompt}], 'stream': True}
+        if len(json.dumps(payload).encode()) > MAX_BYTES:
+            raise ValueError('Conversation exceeds request limit')
         path = '/api/chat' if self.route_id == 'ollama' else '/v1/chat/completions'
         if self.route_id == 'llamacpp':
             path += '?autoload=false'

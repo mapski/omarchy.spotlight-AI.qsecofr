@@ -4,7 +4,8 @@ import os
 import subprocess
 import sys
 import threading
-from dataclasses import asdict
+import uuid
+from dataclasses import asdict, replace
 from pathlib import Path
 from backend.protocol import MAX_BYTES, parse_request
 from backend.registry import Registry
@@ -47,6 +48,12 @@ class Bridge:
                 self.emit({'kind': 'activated'})
             elif op == 'settings':
                 self.emit({'kind': 'settings', 'settings': self.state.load_settings()})
+            elif op == 'configure':
+                settings = self.state.load_settings()
+                settings['roots'] = message.get('roots', settings.get('roots', []))
+                settings['selection'] = message.get('selection', settings.get('selection', {}))
+                self.state.save_settings(settings)
+                self.emit({'kind': 'settings', 'settings': settings})
             elif op == 'opt_in':
                 if type(message.get('enabled')) is not bool:
                     raise ValueError('Explicit opt-in required')
@@ -65,7 +72,7 @@ class Bridge:
             elif op == 'clear_history':
                 self.cancel_all()
                 self.state.clear_history()
-                self.emit({'kind': 'history', 'history': {}})
+                self.emit({'kind': 'history', 'history': {}, 'cleared': True})
             elif op == 'history':
                 self.emit({'kind': 'history', 'history': self.state.history()})
             elif op == 'cancel':
@@ -76,6 +83,20 @@ class Bridge:
                     raise ValueError('AI opt-in is required')
                 request = parse_request(json.dumps(message.get('request')))
                 request_id = request.request_id
+                if request.conversation_id:
+                    turns = self.state.history().get(request.conversation_id)
+                    if not isinstance(turns, list) or not turns:
+                        raise ValueError('Conversation unavailable')
+                    for turn in turns:
+                        if not isinstance(turn, dict) or turn.get('role') not in {'user', 'assistant'} or not isinstance(turn.get('text'), str):
+                            raise ValueError('Invalid saved conversation')
+                        if any(turn.get(key, '') != getattr(request, key) for key in ('route_id', 'model_id', 'backend_id')):
+                            raise ValueError('Conversation destination mismatch')
+                    if len(json.dumps(turns).encode()) + len(request.prompt.encode()) > MAX_BYTES:
+                        raise ValueError('Conversation too large; start a new chat')
+                    request = replace(request, history=tuple({'role': t['role'], 'content': t['text']} for t in turns))
+                elif not request.temporary:
+                    request = replace(request, conversation_id=uuid.uuid4().hex)
                 adapter = self.registry.adapters.get(request.route_id)
                 if adapter is None:
                     raise ValueError('Provider Q&A isolation is not yet verified')
@@ -125,15 +146,15 @@ class Bridge:
                 elif event.kind == 'done':
                     terminal = 'done'
             with self.lock:
-                if terminal == 'done' and not cancel.is_set():
-                    self.state.append_turn(request.request_id, {'role': 'user', 'text': request.prompt})
-                    self.state.append_turn(request.request_id, {'role': 'assistant', 'text': text})
+                if terminal == 'done' and not cancel.is_set() and not request.temporary:
+                    self.state.save_exchange(request, text)
         except Exception:
             terminal = 'error'
         finally:
             with self.lock:
                 self.active.pop(request.request_id, None)
             self.emit({'kind': 'cancelled' if cancel.is_set() else terminal, 'request_id': request.request_id,
+                       'conversation_id': '' if request.temporary else (request.conversation_id or request.request_id),
                        'text': 'Provider request failed' if terminal == 'error' and not cancel.is_set() else ''})
 
     def cancel_all(self):
