@@ -125,4 +125,4 @@ The publishing guide cannot be completed while the repository is private. That i
 
 ### Current GitHub access status
 
-On 2026-10-11, GitHub repository metadata lookup returned HTTP 404, and local `gh auth status` reported the configured `mapski` token is invalid; network access to the GitHub API also failed. These results do not prove the repository is absent or public/private. Do not push until authenticated access verifies the repository and its private visibility.
+On 2026-10-11, MP confirmed the supplied URL opens in their browser, so the URL is valid. From this agent environment, GitHub metadata lookup returned HTTP 404, local `gh auth status` reported the configured `mapski` token is invalid, and a read-only Git check failed because `github.com` did not resolve. The remote repository’s visibility and branch history therefore remain unverified here. Do not push until authenticated access verifies repository identity, private visibility, and remote history.
