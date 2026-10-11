@@ -47,3 +47,15 @@ The launcher removes inherited API keys, endpoint overrides, proxy/helper/runtim
 - VM native status checks reported neither first-party sign-in confirmed. Live inference remains explicitly deferred. Both execution routes therefore remain disabled; local search and native sign-in actions are usable.
 
 References refreshed: [Codex CLI](https://learn.chatgpt.com/docs/codex/cli), [Codex configuration](https://learn.chatgpt.com/docs/config-file/config-reference), [Claude settings precedence](https://code.claude.com/docs/en/settings). Installed-version mock evidence, rather than documentation alone, determines readiness.
+
+## Personal-account gate experiment — 2026-10-11
+
+Native status confirms the VM's existing Claude Pro sign-in. A candidate gate checks Linux, exact CLI 2.1.296, personal Pro/Max native OAuth, an owned non-symlink config directory, absence of /etc/claude-code and cached remote-settings.json, and repeats filesystem checks before requests. It rejects unsupported versions before running auth status. The isolated profile disables tools, MCP, slash commands, persistence, customizations and configured model fallback; it uses a fresh working directory and the CLI-owned sign-in path.
+
+The production-profile/parser fixture (`tests/manual/claude_adapter.py`) passed synthetic text, hostile Bash tool response and HTTP error cases. Text completed with one request; the hostile tool response failed with one request and no execution; the HTTP error failed after three same-model attempts. No tool advertisement, context sentinel, helper/hook marker, session JSONL or persisted synthetic prompt was found. These tests replace authentication and policy preflight with synthetic fixtures and therefore **do not prove the subscription authentication boundary**.
+
+Fresh review found that separate native status and prompt processes do not bind the checked account to the account actually used; newly fetched managed policy may execute in noninteractive sessions without being cached. Executable identity can also change between checking and launch, and alternate credential precedence needs exact-version evidence. The early version rejection and a host-dependent test were fixed; the other assurance gaps remain.
+
+Automatic approval review rejected registry/UI wiring because those policy protections were unproven. The user then explicitly chose **Keep subscription CLI blocked**. The candidate remains unregistered and has `EXECUTION_APPROVED = False`, with a regression proving rejection before any subprocess launch. No API-key route was added; sign-in remains intact; no live inference occurred. Before future activation, establish a supported same-execution credential/policy boundary and bind the verified executable, then repeat independent review. Do not treat a passing personal preflight as activation approval.
+
+Current references: [managed-policy delivery and noninteractive behavior](https://code.claude.com/docs/en/server-managed-settings), [parent policy precedence](https://code.claude.com/docs/en/managed-settings), [model fallback controls](https://code.claude.com/docs/en/model-config).
