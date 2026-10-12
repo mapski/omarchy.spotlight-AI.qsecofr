@@ -16,7 +16,7 @@ class ChatGPTAdapter:
     def discover(self):
         try:
             models=self.catalog(self.auth.snapshot())
-            return ProviderStatus('chatgpt',bool(models),'Live inference untested' if models else 'No account models available',models,streaming=True)
+            return ProviderStatus('chatgpt',bool(models),'Ready for text Q&A' if models else 'No account models available',models,streaming=True)
         except Exception:
             return ProviderStatus('chatgpt',False,'Continue with ChatGPT, then refresh providers')
 

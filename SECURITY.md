@@ -20,7 +20,7 @@ App history is bounded and clearable. Removing the plugin retains state; clearin
 
 ## Evidence and limits
 
-75 offline tests and synthetic real-binary jcode probes passed. The tests cover no-tools requests, unsolicited tool rejection, redirect rejection, selection binding and cancellation boundaries. Live inference, service-side behavior and answer accuracy remain unverified. This does not establish absence of all vulnerabilities.
+The historical preview and corrected clone have dated offline/Qt and synthetic jcode evidence. Real direct ChatGPT and LM Studio streaming/cancellation have now passed through the production backend; QML acceptance and final rc.2 checks remain pending. The initial diff security scan reported zero findings only for its sealed starting snapshot; final changes require review. See [rc.2 evidence and limits](docs/RELEASE-1.0.0-rc.2.md). Broad service-side behavior and answer accuracy are not established by these narrow tests, nor is absence of all vulnerabilities.
 
 ## Report privately
 

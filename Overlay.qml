@@ -292,7 +292,7 @@ Item {
             Button { text: "Cancel sign-in"; onClicked: root.send({op: "auth_cancel"}) }
           }
           Label { visible: root.chatgptAuthStatus !== ""; text: root.chatgptAuthStatus; wrapMode: Text.Wrap; Layout.fillWidth: true }
-          Label { text: "Uses your ChatGPT plan · Cloud · Q&A only · Live inference untested"; wrapMode: Text.Wrap; Layout.fillWidth: true }
+          Label { text: "Uses your ChatGPT plan · Cloud · Q&A only"; wrapMode: Text.Wrap; Layout.fillWidth: true }
         }
         RowLayout {
           visible: (input.text.indexOf("ai:") === 0 || root.aiEnabled) && (root.authRoute === "claude" || root.authRoute === "codex")
@@ -340,12 +340,12 @@ Item {
             onClicked: root.send({op: "activate", id: modelData.id})
           }
         }
-        ScrollView {
+        AnswerView {
           Layout.fillWidth: true
           Layout.fillHeight: true
           visible: Presentation.showAnswer(input.text, root.answer)
-          clip: true
-          Answer { width: parent.width; answer: root.answer; foreground: Commons.Color.menu.text }
+          answer: root.answer
+          foreground: Commons.Color.menu.text
         }
         RowLayout {
           Button { visible: input.text.indexOf("ai:") === 0; text: "Stop"; enabled: root.busy; onClicked: root.send({op: "cancel"}) }
@@ -371,9 +371,9 @@ Item {
           Label { text: "One absolute path per line. Empty means applications only."; wrapMode: Text.Wrap; Layout.fillWidth: true }
           ScrollView {
             Layout.fillWidth: true; Layout.fillHeight: true
-            TextArea { id: rootsEditor; Keys.onTabPressed: saveFolders.forceActiveFocus(); placeholderText: "/home/mp/Documents"; wrapMode: TextEdit.Wrap }
+            TextArea { id: rootsEditor; Keys.onTabPressed: saveFolders.forceActiveFocus(); placeholderText: "/home/you/Documents"; wrapMode: TextEdit.Wrap }
           }
-          Label { text: "AI opt-in and model selection are saved locally. No credentials are stored."; wrapMode: Text.Wrap; Layout.fillWidth: true }
+          Label { text: "Settings are saved locally. ChatGPT credentials use the app’s private account store."; wrapMode: Text.Wrap; Layout.fillWidth: true }
           Label { id: rootsError; text: ""; wrapMode: Text.Wrap; Layout.fillWidth: true }
           RowLayout {
             Button { id: saveFolders; text: "Save"; onClicked: {

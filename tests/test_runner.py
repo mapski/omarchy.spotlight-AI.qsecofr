@@ -41,9 +41,20 @@ class RunnerTests(unittest.TestCase):
 
     def test_cancel_stops_stream(self):
         cancel = threading.Event()
-        stream = stream_process([sys.executable, '-u', '-c', 'import time; print("ready"); time.sleep(20)'], b'', cancel)
-        self.assertEqual(next(stream), b'ready\n')
-        cancel.set()
-        start = time.monotonic()
-        self.assertEqual(list(stream), [])
-        self.assertLess(time.monotonic() - start, 2)
+        # Pipe reads may split a line across chunks; exercise that explicitly.
+        stream = stream_process([sys.executable, '-u', '-c',
+            'import os,time; os.write(1,b"ready"); time.sleep(.1); os.write(1,b"\\n"); time.sleep(20)'],
+            b'', cancel, timeout=3)
+        try:
+            ready = b''
+            while not ready.endswith(b'\n'):
+                ready += next(stream)
+                self.assertLessEqual(len(ready), len(b'ready\n'))
+            self.assertEqual(ready, b'ready\n')
+            cancel.set()
+            start = time.monotonic()
+            self.assertEqual(list(stream), [])
+            self.assertLess(time.monotonic() - start, 2)
+        finally:
+            cancel.set()
+            stream.close()

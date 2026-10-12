@@ -2,17 +2,17 @@
 
 Priorities, not delivery promises.
 
-## Candidate 1 — delivered in the lab
+## Release candidates
 
 Local name search, keyboard palette, explicit destinations, direct ChatGPT sign-in/catalog, loaded LM Studio discovery, optional reviewed jcode Q&A, bounded history, cancellation, synthetic isolation tests and official lifecycle checks.
 
 ## Before public 1.0
 
-- Owner-authorized live ChatGPT and local inference checks, including streaming and cancellation.
+- Complete actual QML direct ChatGPT/LM Studio chat and Stop checks; production Bridge streaming/cancellation already passed. [Current evidence](RELEASE-1.0.0-rc.2.md).
 - Record real latency/quality observations instead of extrapolating from synthetic tests.
-- Complete IME acceptance, choose the permanent plugin identity and verify clean public installation/removal.
+- Verify live chat and Stop end to end through the palette UI; test additional IME engines, themes and scales.
 - Recheck privacy, licenses, distribution contents and final screenshot/claim accuracy.
-- Obtain explicit public-release approval; keep the repository private until then.
+- Final 1.0 and Omarchy plugin marketplace submission.
 
 ## Next investigation: least practical local footprint
 

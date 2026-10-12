@@ -90,7 +90,7 @@ The user-suggested `claude --settings '{"forceLoginMethod":"claudeai"}' /login` 
 
 ## Codex executable-tool and configuration follow-up — 2026-10-11
 
-VM333, Codex 0.162.1, synthetic loopback Responses endpoint only:
+Clean Omarchy test install, Codex 0.162.1, synthetic loopback Responses endpoint only:
 
 - A `gpt-6.1-sol` response calling `functions.exec` with `text("CODE_MODE_EXECUTION_MARKER")` executed JavaScript and returned that exact marker as a separate output text item. Disabling code_mode, code_mode_only, multi_agent_v2 and current_time_reminder did not remove the embedded tool surface in this profile. Two mock requests; no host command was requested by this response.
 - A `gpt-5.5` unsolicited apply_patch response was dispatched but did not write its disposable marker under the read-only sandbox. Two mock requests. This verifies the tested write rejection, not absence of tools.

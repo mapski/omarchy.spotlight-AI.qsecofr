@@ -160,7 +160,7 @@ class Bridge:
         try:
             if route == 'chatgpt':
                 account = self.chatgpt.snapshot()
-                self.emit({'kind':'auth_status','route_id':'chatgpt','signed_in':True,'text':'Signed in. Refresh providers; live inference remains untested.'})
+                self.emit({'kind':'auth_status','route_id':'chatgpt','signed_in':True,'text':'Signed in. Refresh providers to select a model.'})
                 self.emit(dict(self.chatgpt.accounts(), kind='chatgpt_accounts'))
             else:
                 self.emit(self.auth.check(route, cancel))

@@ -1,19 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "mp.emojis",
-  "name": "Model Search (private v1 candidate)",
-  "version": "1.0.0-rc.1",
-  "author": "Omarchy",
-  "description": "Local search and explicit model Q&A; development clone",
+  "id": "io.github.mapski.model-search",
+  "name": "Model Search",
+  "version": "1.0.0-rc.2",
+  "author": "mapski",
+  "description": "Keyboard-first local search and explicit model Q&A",
   "kinds": [
     "overlay"
   ],
   "keepLoaded": true,
   "entryPoints": {
     "overlay": "Overlay.qml"
-  },
-  "omarchy": {
-    "clonedFrom": "omarchy.emojis"
   },
   "license": "MIT"
 }

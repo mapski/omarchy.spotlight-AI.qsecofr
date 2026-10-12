@@ -1,14 +1,14 @@
 # Getting started
 
-This guide describes preview candidate 1.0.0-rc.1. Start on an authorized test desktop. The validated environment is Omarchy 4.0.4-1, Quickshell 0.3.1-1 and Qt 6.11.2-1. Other versions are not claimed tested.
+This guide describes corrected candidate 1.0.0-rc.2, currently prepared but unpublished. Complete the [candidate checks](RELEASE-1.0.0-rc.2.md) before enablement. The validated environment is Omarchy 4.0.4-1, Quickshell 0.3.1-1 and Qt 6.11.2-1. Other versions are not claimed tested.
 
 ## Open and search
 
-On VM333 use **Super+Ctrl+M**. Type an application name such as `Foot`. For filenames, open Settings and choose explicit search roots. Matching is name-based; it is not semantic document-content search. Use arrow keys and Enter to activate a result. Escape clears/closes the palette. An empty result does not trigger AI or a cloud search.
+After enablement, use the shortcut configured for `io.github.mapski.model-search`; the earlier VM clone used **Super+Ctrl+M**. Type an application name such as `Foot`. For filenames, open Settings and choose explicit search roots. Matching is name-based; it is not semantic document-content search. Use arrow keys and Enter to activate a result. Escape clears/closes the palette. An empty result does not trigger AI or a cloud search.
 
 ## Choose AI deliberately
 
-Enable AI, refresh providers, choose a provider, then choose a model. Use the `ai:` prefix to ask. An unavailable model remains unavailable; the app does not substitute another provider. Real inference remains pending in this candidate—using a real prompt is outside the completed synthetic acceptance checks.
+Enable AI, refresh providers, choose a provider, then choose a model. Use the `ai:` prefix to ask. An unavailable model remains unavailable; the app does not substitute another provider. Real direct ChatGPT and LM Studio streaming/cancellation passed through the production backend. Actual QML chat acceptance remains pending; see the [measured scope](RELEASE-1.0.0-rc.2.md#verified-real-backend-requests).
 
 ### ChatGPT
 
@@ -18,11 +18,11 @@ The direct app connection is independent of native Codex CLI. Eligibility, quota
 
 ### Existing LM Studio
 
-Start the already installed LM Studio server and load a compatible model yourself. The app discovers only models reported as loaded at `http://127.0.0.1:1234`. Discovery does not download, load or switch a model. The current VM reaches workstation LM Studio using a temporary loopback SSH tunnel. See [host distinction and tunnel lifecycle](TWO-PROVIDER-SETUP.md).
+Start the already installed LM Studio server and load a compatible model yourself. The app discovers only models reported as loaded at `http://127.0.0.1:1234`. Discovery does not download, load or switch a model.
 
 ### Optional jcode
 
-The lab has the reviewed jcode 0.94.0 binary already installed. Select **jcode · LM Studio Q&A** and its loaded model. On another machine the route stays unavailable until the exact reviewed runtime is installed with owner approval. No account import or jcode cloud route is enabled. [Setup and limitations](JCODE.md).
+jcode 0.94.0 is optional and not bundled. Select **jcode · LM Studio Q&A** and its loaded model. On another machine the route stays unavailable until the exact reviewed runtime is installed with owner approval. No account import or jcode cloud route is enabled. [Setup and limitations](JCODE.md).
 
 ## Accounts and data
 
@@ -36,6 +36,6 @@ The lab has the reviewed jcode 0.94.0 binary already installed. Select **jcode �
 
 ## Install or remove
 
-Follow [the candidate's exact lab instructions](V1-RC.md). Its temporary clone identity is not suitable for a general marketplace installer. Do not install on the owner's daily desktop without authorization. Never launch a second Quickshell instance.
+Follow the [README install steps](../README.md#install). Never launch a second Quickshell instance.
 
-No additional model, runtime or dependency downloads without owner approval.
+The app never downloads models, runtimes or dependencies on its own.

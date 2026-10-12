@@ -1,6 +1,8 @@
 .pragma library
 // Adapted from omaSearch AskModel.js, MIT; see THIRD_PARTY_NOTICES.md.
 var MAX_FIELD = 1048576
+// Bound Markdown formatting work in the shared shell; larger answers stay plain text.
+var MAX_FORMATTED = 4096
 function clipText(value, limit) {
   // Bound an answer like clip(), but keep line breaks and indentation so
   // paragraphs, lists and code survive.
@@ -94,6 +96,7 @@ function parseMarkdown(text, codeColor, dimColor) {
   // 0 first block, 1 a plain line break, 2 a blank line before it.
   // An unclosed ``` fence (still streaming) runs to the end as code.
   var plain = clipText(text, MAX_FIELD)
+  if (plain.length > MAX_FORMATTED) return [{ kind: "code", text: plain }]
   var lines = plain.split("\n")
   // Keep object creation bounded in the shared desktop shell.
   if (lines.length > 512) return [{ kind: "code", text: plain }]
@@ -156,7 +159,8 @@ function parseMarkdown(text, codeColor, dimColor) {
       open.lines.push(line)
       continue
     }
-    if ((m = /^\s{0,3}(#{1,6})\s+(.*?)(?:\s+#+)?\s*$/.exec(line))) {
+    // Include Unicode line separators so a heading body cannot force whitespace retries.
+    if ((m = /^\s{0,3}(#{1,6})\s+([\s\S]*?)(?:\s+#+)?\s*$/.exec(line))) {
       flush()
       indents = []
       add({ kind: "h", level: m[1].length, depth: 0, marker: "", ordered: false,

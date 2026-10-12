@@ -1,8 +1,8 @@
 # Questions and current limits
 
-**Is this a finished public 1.0?** No. It is preview candidate 1.0.0-rc.1. Real inference and final public packaging acceptance remain pending.
+**Is this a finished public 1.0?** No. The corrected 1.0.0-rc.2 candidate is prepared but unpublished. Real direct-provider backend tests passed; actual QML acceptance, final checks and publication remain pending. See the [release record](RELEASE-1.0.0-rc.2.md).
 
-**Does it replace Omarchy's shell?** No. It is a user-owned overlay clone using the existing shell lifecycle.
+**Does it replace Omarchy's shell?** No. It is a user-owned overlay using the existing shell lifecycle. The corrected candidate has permanent ID `io.github.mapski.model-search`.
 
 **Is ordinary search powered by an LLM?** No. It matches application names and filenames in configured roots. It does not read/index document contents or perform semantic research.
 
@@ -20,6 +20,8 @@
 
 **Is Colibri included?** No. Its current source/API and hardware requirements are prioritized for evaluation. No Colibri runtime or weights have been installed.
 
-**Can I install this on my daily desktop?** The current acceptance environment is the authorized lab VM. The temporary clone identity and outstanding tests make this a controlled preview, not a general installer.
+**Can I install this on my daily desktop?** It is a release candidate. Back up `~/.config/hypr` and `~/.config/omarchy` first; removal with `omarchy plugin remove` is supported.
 
-**Why does local become unavailable after reboot?** The lab's workstation-to-VM tunnel is temporary. Restore that authorized connection and ensure the model is loaded. No fallback occurs.
+**Why is LM Studio unavailable?** The app only lists models that LM Studio reports as loaded on its loopback endpoint. Start the server and load a model; there is no fallback.
+
+**Why does a long answer appear as plain text?** Answers above 4,096 normalized UTF-16 code units use plain text to keep malformed Markdown from blocking the shared shell. No additional answer text is removed beyond the existing answer limit. Short answers retain Markdown formatting.

@@ -1,14 +1,14 @@
 # jcode Q&A integration
 
-Priority: working direct ChatGPT first, followed in the picker by the blocked Codex CLI and optional jcode. Existing LM Studio is the local backend. Claude remains blocked. New dependency/model downloads require explicit owner approval; do not automatically install, update, pull, or replace models. The Gemma E2B download remains paused. Colibri is a priority for a later source/hardware evaluation, not an approved model download.
+Priority: working direct ChatGPT first, followed in the picker by the blocked Codex CLI and optional jcode. Existing LM Studio is the local backend. Claude remains blocked. The app never installs, updates, pulls or replaces models automatically. Colibri is a priority for a later source/hardware evaluation, not an approved model download.
 
 ## Verified version and scope
 
 The current official release inspected on 2026-10-11 is v0.94.0, source tag commit b6c63ff. Upstream master was 6487bbd7e9a45e6f91822292d6128854d5a6c5c6 (0.95.0 development); that development build is not installed or claimed tested.
 
-The official Linux x86-64 archive SHA-256 is `e471f61e661612cfd6da5e9c1bb8238fab0c63c3ebc96c648439816649478c1b`. Extracted executable SHA-256 is `8fe2c71d03ff306eb930b09ea13d51f44aeac03a51a648cae65c6b01ede82085`. Only this verified binary is enabled; other versions require renewed verification. It is installed only on VM333 at `~/.local/share/omarchy-model-search/runtime/jcode-0.94.0.bin` (about 137 MB). No system package or daily-desktop installation. The archive was about 44 MB. No further downloads are automatic.
+The official Linux x86-64 archive SHA-256 is `e471f61e661612cfd6da5e9c1bb8238fab0c63c3ebc96c648439816649478c1b`. Extracted executable SHA-256 is `8fe2c71d03ff306eb930b09ea13d51f44aeac03a51a648cae65c6b01ede82085`. Only this verified binary is enabled; other versions require renewed verification.When installed, it is expected at `~/.local/share/omarchy-model-search/runtime/jcode-0.94.0.bin` (about 137 MB). The archive was about 44 MB. No further downloads are automatic.
 
-Select **jcode · LM Studio Q&A**, then an explicitly loaded model. Backend is displayed as lmstudio/local. The existing workstation LM Studio is reached through the documented temporary loopback SSH tunnel. jcode does not serve models and does not reduce their weight storage requirement. No native jcode cloud authentication is imported or enabled; the working direct ChatGPT account remains separate.
+Select **jcode · LM Studio Q&A**, then an explicitly loaded model. Backend is displayed as lmstudio/local. jcode does not serve models and does not reduce their weight storage requirement. No native jcode cloud authentication is imported or enabled; the working direct ChatGPT account remains separate.
 
 ## Execution boundary
 

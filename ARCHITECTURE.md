@@ -1,6 +1,6 @@
 # Architecture and Product Specification
 
-**Status:** Approved for inline implementation on 2026-10-11. Private prototype in progress on VM333; see docs/VALIDATION.md for current evidence and remaining gates.
+**Status:** Release candidate 1.0.0-rc.2. See [release notes](docs/RELEASE-1.0.0-rc.2.md) and [testing](docs/TESTING.md).
 
 ## Purpose
 
@@ -15,7 +15,7 @@ The visual and interaction goal is the compact, keyboard-first command palette d
 - Keep this project separate at `~/Work/Projects/Omarchy-Model-Search` so it can become an independent public repository.
 - Preserve upstream attribution, notices, and applicable MIT license text for omaSearch code retained or modified.
 - Detect installed provider commands and local endpoints. Let the user explicitly choose a provider and model; do not silently switch providers or send a query to a different service.
-- Use each cloud provider's supported CLI and existing user authentication. Do not scrape browser sessions, copy OAuth tokens, or collect provider passwords.
+- For CLI routes, use supported interfaces and existing user authentication only after their isolation gates pass. The separately approved direct ChatGPT route owns credentials issued to this app; it does not reuse Codex CLI authentication. Do not scrape browser sessions, copy existing provider tokens, or collect provider passwords.
 - Treat LM Studio, llama.cpp, and Ollama as independent local server routes. Discover models from existing loopback endpoints; do not start services or download models automatically. LM Studio and llama.cpp use their OpenAI-compatible APIs; Ollama uses its native HTTP API.
 - For LM Studio and llama.cpp, require an already loaded model and avoid automatic model loading. For Ollama, list installed models and distinguish running models; an explicit query may let Ollama load the selected, already downloaded local model, but discovery must not trigger loading.
 - Add Pi (pi.dev) as a separate CLI adapter using its supported noninteractive interface and existing authentication. Display both Pi and its selected underlying provider/model; classify the destination by the actual backend, not by the CLI running locally.
@@ -36,9 +36,11 @@ The visual and interaction goal is the compact, keyboard-first command palette d
 - **Search router:** distinguishes local search, web search, and explicit AI requests. It does not infer permission to send a normal query to a cloud model.
 - **Provider registry and adapters:** each adapter reports availability, model choices, streaming support, image support, and invocation method. Shared UI does not hard-code provider-specific assumptions.
 - **Provider process/API boundary:** CLI adapters invoke supported local CLIs, including Pi; LM Studio, llama.cpp, and Ollama use loopback HTTP APIs. Output and errors are normalized for the UI, with cancellation and timeouts.
-- **Private state:** selected provider/model and bounded conversation history live under a user-owned state directory with restrictive permissions. Secrets are not copied there. The user can clear history.
+- **Private state:** selected provider/model and bounded history live under a user-owned state directory with restrictive permissions. Existing CLI credentials are never copied. Direct ChatGPT credentials use a separate owner-only auth directory and are not encrypted at rest. Clear history and sign-out are separate controls; removal preserves private state. See [account/data controls](docs/GETTING-STARTED.md#accounts-and-data).
 
 ## Provider behavior
+
+This table describes the approved adapter design, not a claim that every route is enabled. The [README readiness table](README.md#what-is-ready) records current availability. Direct ChatGPT and optional jcode are described in the later approved additions; Claude, native Codex, Grok, Hermes and Pi execution remain blocked.
 
 | Provider | Connection | Discovery and selection | Initial safety behavior |
 | --- | --- | --- | --- |
@@ -66,7 +68,7 @@ Pi is a routing harness, so its backend may be local or cloud. Before enabling t
 
 ## Public project and delivery
 
-The project folder is independent of `Omarchy-DR`. Before public release, establish the final name, repository URL, and plugin ID; retain license notices; add user and developer documentation, a security reporting path, and a changelog; validate the plugin manifest and QML; and test installation, enable/disable, shortcut conflicts, provider absence, cancellation, and local-only operation. No public repository has been created or pushed as part of this architecture stage.
+The project remains independent of other workstation projects. The public [source preview](https://github.com/mapski/omarchy.spotlight-AI.qsecofr/releases/tag/v1.0.0-rc.1) retains development clone metadata and is not a marketplace-ready package. The rc.2 manifest now uses permanent ID `io.github.mapski.model-search`; final package/license review, current validation, permanent-ID installation/removal and required UI/provider acceptance remain pending. See the [release checklist](docs/RELEASE-CHECKLIST.md); preview approval does not waive these gates.
 
 ## Initial acceptance criteria
 
@@ -115,7 +117,9 @@ If a guide step is unclear, a required check cannot run, or current Omarchy beha
 7. **Keep install/removal safe and user-controlled.** Document safe installation, enablement, configuration, disabling, and removal. Test removal and confirm it leaves no unexpected user data or system changes. Do not install or enable the plugin on the user's daily environment without explicit authorization and the required before/after documentation.
 8. **Do not skip visual review.** Review the overlay at the actual supported display scale and theme; verify sizing, focus, keyboard flow, readable streaming output, and empty/loading/error states. Keep a visual preview for release when practical and ensure it contains no private prompt/history data.
 
-### Private GitHub repository and source-of-truth rules
+### Repository visibility and source-of-truth rules
+
+Historical note: the project was developed privately before the public release candidates.
 
 - The intended canonical repository is [`mapski/omarchy.spotlight-AI.qsecofr`](https://github.com/mapski/omarchy.spotlight-AI.qsecofr), cloned locally at `~/Work/Projects/Omarchy-Model-Search` with remote name `origin`.
 - Keep the GitHub repository **private** during design, implementation, testing, and pre-1.0 review. Do not publish the repository, create a public mirror, submit it to the Omarchy marketplace, or expose unpublished code through public artifacts before the explicit 1.0 release approval.
@@ -133,20 +137,20 @@ The official marketplace publishing guide requires a **public GitHub repository*
 4. Once public, submit the repository through the official Omarchy plugin submission issue form with its repository link, category, and tags. Do not claim marketplace acceptance until a maintainer approves it.
 5. Record the exact public commit/version submitted and the marketplace result. Keep rollback/recovery instructions and installation/removal steps current.
 
-The publishing guide cannot be completed while the repository is private. That is an intentional release gate, not a reason to make it public early.
+A public repository satisfies only the visibility prerequisite. The existing preview does not complete the publishing guide, final 1.0 acceptance or marketplace submission. All remaining gates apply; the scoped rc.2 publication authorization does not approve final 1.0 or marketplace submission.
 
 ### Current GitHub access status
 
-On 2026-10-11, interactive sign-in restored authenticated access as `mapski`. API and Git checks verified `mapski/omarchy.spotlight-AI.qsecofr` is private, with admin access and default branch `main`. Remote history contains root commit `17aa400`; local history contains `166a064` and `38fb53c` and still needs reconciliation. Nothing has been pushed. Refresh remote identity, visibility, and history before any push.
+Authenticated metadata rechecked on 2026-10-11 (America/Toronto) confirms `mapski/omarchy.spotlight-AI.qsecofr` is public with default branch `main`. Prerelease `v1.0.0-rc.1` targets `fda6080deaab325c915a94857e9ae2c17cffebf9` and was published at 20:36 EDT. Earlier private-repository and unreconciled-history notes are historical. This read-only check does not authorize new publication; recheck identity, visibility, refs and history before any future approved push.
 
 
 ## Direct Sign in with ChatGPT — approved 2026-10-11
 
-The user approved a separate `chatgpt` route using the official public-client OAuth flow and public Responses API. This supersedes the CLI-only credential assumption for this route. Codex CLI and Claude subscription execution remain blocked. Live inference tests remain pending.
+The user approved a separate `chatgpt` route using the official public-client OAuth flow and public Responses API. This supersedes the CLI-only credential assumption for this route. Codex CLI and Claude subscription execution remain blocked. Later authorized direct ChatGPT/LM Studio backend live tests passed; QML acceptance remains pending in the [rc.2 record](docs/RELEASE-1.0.0-rc.2.md).
 
 The app uses dynamic client registration, a persistent per-installation host ID, loopback callback, fresh state/nonce and S256 PKCE. It validates ID-token signature, issuer, audience, expiry and nonce with PyJWT/cryptography; returning registrations must retain their subject/client binding. Tokens are kept in owner-only atomic files under the app's separate chatgpt-auth state directory, never QML, logs, history or CLI credential stores. Refresh is serialized across processes; cancellation/account changes invalidate pending login commits. Logout attempts provider revocation then clears local tokens, retaining registration identity for reauthentication.
 
-Model discovery uses the selected account's `/v1/models` catalog. Explicit account/model selection binds each conversation. `/v1/responses` receives text turns, instructions, `store: false`, and streaming; no tools, agent subprocess, filesystem context, CLI configuration or fallback. Tool output and mismatched/incomplete completions fail closed. This is implemented and tested with synthetic fixtures; real account eligibility, consent, model discovery and inference are unverified.
+Model discovery uses the selected account's `/v1/models` catalog. Explicit account/model selection binds each conversation. `/v1/responses` receives text turns, instructions, `store: false`, and streaming; no tools, agent subprocess, filesystem context, CLI configuration or fallback. Tool output and mismatched/incomplete completions fail closed. Synthetic fixtures cover the implementation. The later [lab configuration record](docs/VALIDATION.md#chatgpt--lm-studio-lab-configuration--2026-10-11) confirms a saved direct ChatGPT sign-in and authenticated catalog discovery. Subsequent owner-authorized production Bridge tests passed real streaming and cancellation for the selected ChatGPT and LM Studio models. Actual QML chat, broader answer quality, real-service refresh/revocation and general account eligibility are not established by those tests; see the [rc.2 scope](docs/RELEASE-1.0.0-rc.2.md#verified-real-backend-requests).
 
 Sources: [Sign-in](https://developers.openai.com/siwc/token-sharing-open-source/sign-in), [accounts and sessions](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions), [models and inference](https://developers.openai.com/siwc/token-sharing-open-source/models-and-inference), [preview limitations](https://developers.openai.com/siwc/token-sharing-open-source/preview-limitations), [OIDC validation](https://developers.openai.com/siwc/website). Reviewed 2026-10-11.
 

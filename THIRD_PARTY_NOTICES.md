@@ -2,7 +2,7 @@
 
 ## omaSearch / omAsk
 
-Markdown formatting in ui/Markdown.js is adapted from omaSearch AskModel.js at commit a002289c04dff552fd9c73ef2bd7d7be838ca271. The bounded runner design informed backend/runner.py; retain this notice.
+`ui/Markdown.js` is adapted from omaSearch `AskModel.js`, and `backend/runner.py` is substantially adapted from omaSearch `bounded.py`, both at commit `a002289c04dff552fd9c73ef2bd7d7be838ca271`. The runner adds nonblocking stdin, streaming cancellation, explicit execution context and sanitized failure handling. Retain the upstream omaSearch/omAsk MIT notices below.
 
 MIT License
 
@@ -53,4 +53,4 @@ SOFTWARE.
 
 ## Optional external jcode runtime
 
-[jcode v0.94.0](https://github.com/1jehuang/jcode/tree/v0.94.0), MIT, is separately installed only by owner approval. No source or binary is bundled with this plugin. Version, artifact hashes and installation scope: docs/JCODE.md.
+[jcode v0.94.0](https://github.com/1jehuang/jcode/tree/v0.94.0), MIT, is optional and installed separately by the user. No source or binary is bundled with this plugin. Version, artifact hashes and installation scope: docs/JCODE.md.
