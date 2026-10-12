@@ -1,4 +1,4 @@
-# Model Search 1.0.0-rc.1 — private preview
+# Model Search 1.0.0-rc.1 — public preview
 
 Find locally. Ask deliberately.
 
@@ -10,6 +10,6 @@ This source-only candidate brings keyboard application/filename search, explicit
 
 ## Scope
 
-Private development candidate, not public 1.0 or a marketplace installer. The temporary mp.emojis clone identity is retained. Native Codex and Claude execution remain blocked. Live inference remains pending; model downloads remain paused. No models, runtimes, credentials or conversation history are bundled.
+Public development candidate, not public 1.0 or a marketplace installer. The temporary mp.emojis clone identity is retained. Native Codex and Claude execution remain blocked. Live inference remains pending; model downloads remain paused. No models, runtimes, credentials or conversation history are bundled.
 
 Read docs/GETTING-STARTED.md and docs/V1-RC.md before use on an authorized lab desktop. The media kit contains graphics and campaign drafts; these drafts have not been posted to social accounts.

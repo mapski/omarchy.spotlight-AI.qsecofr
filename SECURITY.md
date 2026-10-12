@@ -1,6 +1,6 @@
 # Security and privacy
 
-This is a private release candidate, not a security-certified product. Omarchy plugins share the shell process and run with the user's permissions.
+This is a public preview candidate, not a security-certified product. Omarchy plugins share the shell process and run with the user's permissions.
 
 ## Intended boundary
 

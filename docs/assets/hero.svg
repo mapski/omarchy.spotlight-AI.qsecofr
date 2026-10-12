@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="620" viewBox="0 0 1440 620" role="img" aria-labelledby="title desc">
-<title id="title">Model Search — Find locally. Ask deliberately.</title><desc id="desc">Private v1 preview for Omarchy. A keyboard-first palette with explicit cloud or local Q and A.</desc>
+<title id="title">Model Search — Find locally. Ask deliberately.</title><desc id="desc">Public v1 preview for Omarchy. A keyboard-first palette with explicit cloud or local Q and A.</desc>
 <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffbf8c"/><stop offset="1" stop-color="#b79cff"/></linearGradient></defs>
 <rect width="1440" height="620" rx="24" fill="#080e20"/>
 <path d="M48 96H1392M48 540H1392" stroke="#2a344c"/>
 <g fill="none" stroke="url(#g)" stroke-width="3"><circle cx="82" cy="51" r="17"/><path d="m94 64 16 16"/></g>
 <text x="130" y="63" fill="#f8ede0" font-family="sans-serif" font-size="28" font-weight="700" letter-spacing="1">MODEL SEARCH</text>
-<text x="1390" y="61" text-anchor="end" fill="#c4cad8" font-family="monospace" font-size="16" letter-spacing="2">OMARCHY / PRIVATE V1 PREVIEW</text>
+<text x="1390" y="61" text-anchor="end" fill="#c4cad8" font-family="monospace" font-size="16" letter-spacing="2">OMARCHY / PUBLIC V1 PREVIEW</text>
 <text x="68" y="217" fill="#f8ede0" font-family="sans-serif" font-size="84" font-weight="700" letter-spacing="-3">Find locally.</text>
 <text x="68" y="318" fill="#ffbf8c" font-family="sans-serif" font-size="84" font-weight="700" letter-spacing="-3">Ask deliberately.</text>
 <text x="72" y="382" fill="#bec7d9" font-family="sans-serif" font-size="25">Your keyboard. Your model. Your choice.</text>

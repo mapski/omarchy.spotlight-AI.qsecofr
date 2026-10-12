@@ -5,7 +5,7 @@
 
 ## GitHub candidate and launch kit — 2026-10-11
 
-Owner requested private GitHub distribution and social promotion. Candidate assets now include real VM screenshots, original SVG/PNG graphics, setup/security/FAQ/contribution docs and platform drafts under docs/marketing. Social publishing awaits account identification; public visibility remains unapproved. Preserve Claude block, pending live inference and paused model download. Earlier no-push snapshots below are historical; check the remote and private prerelease for distribution status.
+Owner requested private GitHub distribution and social promotion. Candidate assets now include real VM screenshots, original SVG/PNG graphics, setup/security/FAQ/contribution docs and platform drafts under docs/marketing. Owner explicitly approved public preview visibility and identified X @haldodev. Browser sign-in remains pending. Public preview does not imply final 1.0 or marketplace acceptance. Preserve Claude block, pending live inference and paused model download. Earlier no-push snapshots below are historical; check the remote and private prerelease for distribution status.
 
 ## Current continuation: jcode and minimum downloads
 

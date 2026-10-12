@@ -1,14 +1,16 @@
 # Campaign copy — drafts, not posted
 
-Use the private-preview variants while repository access is restricted. The owner must identify the publishing accounts. Include the appropriate supplied graphic and alt text. No fake popularity, performance or production-readiness claims.
+Use the public-preview variants while repository access is restricted. The owner must identify the publishing accounts. Include the appropriate supplied graphic and alt text. No fake popularity, performance or production-readiness claims.
 
 ## X — primary post
 
-Building Model Search for Omarchy: local search + explicitly chosen AI Q&A. ChatGPT first, optional jcode/local models, no silent fallback. Private v1 preview; live inference testing is pending. Reply if you want to follow the preview.
+Model Search for Omarchy: find locally, ask deliberately. ChatGPT first, optional jcode + LM Studio, explicit provider choice. Public v1 preview; live inference tests pending.
+
+https://github.com/mapski/omarchy.spotlight-AI.qsecofr
 
 **Attachment:** social-card.png
 
-**Alt text:** Model Search on a midnight background. Find locally. Ask deliberately. Private v1 preview for Omarchy; shortcut Super + Ctrl + M.
+**Alt text:** Model Search on a midnight background. Find locally. Ask deliberately. Public v1 preview for Omarchy; shortcut Super + Ctrl + M.
 
 ## X — supporting thread
 
@@ -21,7 +23,7 @@ Publish as one thread only if the owner wants the additional detail; do not post
 
 ## Bluesky / Mastodon — compact post
 
-Model Search for Omarchy: find apps/files locally, then explicitly choose where an AI question goes. Private v1 preview with ChatGPT and optional jcode → LM Studio. Live inference tests are pending. Interested in following the preview?
+Model Search for Omarchy: find apps/files locally, then explicitly choose where an AI question goes. Public v1 preview with ChatGPT and optional jcode → LM Studio. Live inference tests are pending. Interested in following the preview?
 
 **Attachment:** social-card.png. Use the same alt text. Relevant tags if useful: #Omarchy #Linux #LocalAI. No tag stuffing.
 
@@ -29,7 +31,7 @@ Model Search for Omarchy: find apps/files locally, then explicitly choose where 
 
 We are building Model Search, a keyboard-first palette for Omarchy with a simple principle: find locally, ask deliberately.
 
-Ordinary application and filename search stays independent of AI. For questions, the user explicitly chooses the provider and model. The private v1 preview puts ChatGPT first, adds an optional jcode route to an already loaded LM Studio model, and keeps unverified execution routes blocked.
+Ordinary application and filename search stays independent of AI. For questions, the user explicitly chooses the provider and model. The public v1 preview puts ChatGPT first, adds an optional jcode route to an already loaded LM Studio model, and keeps unverified execution routes blocked.
 
 The milestone is concrete: 75 offline tests, sign-in and model-discovery checks, synthetic jcode isolation checks, and VM installation/lifecycle validation. Real inference, latency and answer quality remain the next acceptance work.
 
@@ -41,7 +43,7 @@ We are prioritizing a small practical footprint and owner-approved downloads. If
 
 Find locally. Ask deliberately.
 
-Model Search is our private v1 preview for Omarchy: a keyboard-first palette with local app/file-name search and an explicit choice before AI. ChatGPT first; optional jcode with existing LM Studio models.
+Model Search is our public v1 preview for Omarchy: a keyboard-first palette with local app/file-name search and an explicit choice before AI. ChatGPT first; optional jcode with existing LM Studio models.
 
 The UI and offline boundaries are tested in the lab. Live inference testing is still pending. Follow the preview as we work toward a verified release.
 
@@ -51,7 +53,7 @@ The UI and offline boundaries are tested in the lab. Live inference testing is s
 
 ## Developer community / Reddit / forum introduction
 
-**Title:** Building a small Omarchy search palette with explicit ChatGPT/local Q&A — private v1 preview
+**Title:** Building a small Omarchy search palette with explicit ChatGPT/local Q&A — public v1 preview
 
 I maintain Model Search, a keyboard-first Omarchy palette for application/filename search and deliberately selected AI Q&A. This is a project-owner introduction, not an independent review.
 

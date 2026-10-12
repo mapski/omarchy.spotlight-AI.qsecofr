@@ -1,6 +1,6 @@
 # Contributing
 
-Read AGENTS.md, handoff.d/START-HERE.md and ARCHITECTURE.md first. The active implementation is a private candidate; do not make mirrors or publish code/assets without owner approval.
+Read AGENTS.md, handoff.d/START-HERE.md and ARCHITECTURE.md first. The active implementation is a preview candidate; do not make mirrors or publish code/assets without owner approval.
 
 Keep changes focused on the current priority: direct ChatGPT first, then minimal local footprint. jcode follows Codex in the picker. Claude stays blocked. Colibri is a priority evaluation, not an approved runtime/model download. Ask the owner before any additional download.
 

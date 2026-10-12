@@ -1,6 +1,6 @@
-# Private v1 candidate
+# Public v1 candidate
 
-Version: 1.0.0-rc.1. This archive contains source, tests, documentation and licenses only; no models, runtimes, credentials or history. Keep private. It retains the official VM333 development clone identity mp.emojis, so it is not a marketplace package.
+Version: 1.0.0-rc.1. This archive contains source, tests, documentation and licenses only; no models, runtimes, credentials or history. Public source preview approved by the owner; not a finished 1.0 release. It retains the official VM333 development clone identity mp.emojis, so it is not a marketplace package.
 
 ## Use on VM333
 
@@ -18,4 +18,4 @@ Disable with `omarchy plugin disable mp.emojis`. Remove with `omarchy plugin rem
 
 ## Remaining release gates
 
-Real ChatGPT/local inference, streaming/cancellation with real providers, IME acceptance, final permanent public identity, final public license/package review and explicit public-release approval. The owner requested GitHub distribution of this private candidate. Public visibility remains a separate explicit decision; publishing a prerelease in a private repository does not make its contents public.
+Real ChatGPT/local inference, streaming/cancellation with real providers, IME acceptance, final permanent public identity, final public license/package review and explicit public-release approval. The owner explicitly approved public source-preview visibility on 2026-10-11. This approval does not mark live inference complete or approve a final marketplace release.

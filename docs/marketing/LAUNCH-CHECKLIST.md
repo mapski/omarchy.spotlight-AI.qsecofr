@@ -6,8 +6,8 @@
 - [x] Real local-search, provider-picker and palette screenshots reviewed.
 - [x] README, setup, security, FAQ, roadmap and contribution docs prepared.
 - [x] Platform-specific preview copy drafted.
-- [ ] GitHub private prerelease uploaded and remote commit verified.
-- [ ] Owner confirms private-preview campaign versus public-preview visibility.
+- [ ] GitHub preview prerelease uploaded and remote commit verified.
+- [x] Owner explicitly approved public preview visibility on 2026-10-11.
 - [ ] Owner identifies publishing accounts; access verified without sharing credentials.
 - [ ] Publish approved posts and record exact URLs below.
 - [ ] Public 1.0 acceptance completed separately.
@@ -16,7 +16,7 @@
 
 | Platform | Account | State | Post URL |
 | --- | --- | --- | --- |
-| X | Awaiting owner | Draft ready | — |
+| X | @haldodev | Awaiting browser sign-in | — |
 | LinkedIn | Awaiting owner | Draft ready | — |
 | Mastodon | Awaiting owner | Draft ready | — |
 | Bluesky | Awaiting owner | Draft ready | — |

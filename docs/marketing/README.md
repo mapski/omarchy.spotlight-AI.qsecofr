@@ -4,7 +4,7 @@
 
 Model Search is an independent, keyboard-first Omarchy palette for local name search and explicitly selected AI Q&A. It keeps the destination visible and avoids silent provider fallback.
 
-Current campaign: **private v1 preview**, version 1.0.0-rc.1. The repository has not been approved for public release. Social copy is prepared, not evidence of publication. Do not imply public access to a private link.
+Current campaign: **public v1 preview**, version 1.0.0-rc.1. The repository has not been approved for public release. Social copy is prepared, not evidence of publication. Do not imply public access to a private link.
 
 ## Product brief
 
@@ -36,7 +36,7 @@ Graphics are original vector compositions; screenshots are unretouched region ca
 
 Midnight `#080E20`, warm apricot `#FFBF8C`, pale ink `#F8EDE0`, secondary ink `#B9C2D5`, restrained lilac accent `#C6B4FF`. Use open space, clear type hierarchy and real interface evidence. The original mark combines a search lens with a small crosshair. System sans-serif and monospace font fallbacks avoid font downloads.
 
-Keep the **private preview** label on every current campaign asset. Never retouch a screenshot to imply an unimplemented feature. Do not disguise concept art as the current UI.
+Keep the **public preview** label on every current campaign asset. Never retouch a screenshot to imply an unimplemented feature. Do not disguise concept art as the current UI.
 
 ## Distribution
 

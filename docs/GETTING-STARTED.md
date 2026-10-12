@@ -1,6 +1,6 @@
 # Getting started
 
-This guide describes private candidate 1.0.0-rc.1. Start on an authorized test desktop. The validated environment is Omarchy 4.0.4-1, Quickshell 0.3.1-1 and Qt 6.11.2-1. Other versions are not claimed tested.
+This guide describes preview candidate 1.0.0-rc.1. Start on an authorized test desktop. The validated environment is Omarchy 4.0.4-1, Quickshell 0.3.1-1 and Qt 6.11.2-1. Other versions are not claimed tested.
 
 ## Open and search
 

@@ -1,10 +1,10 @@
-<p align="center"><img src="docs/assets/hero.svg" alt="Model Search — Find locally. Ask deliberately. Private v1 preview for Omarchy." width="100%"></p>
+<p align="center"><img src="docs/assets/hero.svg" alt="Model Search — Find locally. Ask deliberately. Public v1 preview for Omarchy." width="100%"></p>
 
 # Omarchy Model Search
 
 **A keyboard-first search palette with a clear choice before AI.** Find applications and files locally. When you want an answer, explicitly choose ChatGPT or an available local model.
 
-**Private preview · `1.0.0-rc.1` · MIT · 75 offline tests passing**
+**Public preview · `1.0.0-rc.1` · MIT · 75 offline tests passing**
 
 [Get started](docs/GETTING-STARTED.md) · [Release notes](CHANGELOG.md) · [Readiness](docs/VALIDATION.md) · [Security](SECURITY.md) · [Media kit](docs/marketing/README.md)
 
@@ -50,7 +50,7 @@ These are unretouched region captures from VM333 at 1280×800. They show the cur
 
 ChatGPT is a direct app connection. **It does not run Codex CLI.** jcode is an optional harness and still needs a model server; it does not replace LM Studio or shrink model weights.
 
-## Try the private candidate
+## Try the preview candidate
 
 The candidate is intended for an authorized lab environment. It still uses the official development clone ID `mp.emojis`; do not overwrite another plugin or treat it as a marketplace installation.
 
@@ -59,7 +59,7 @@ The candidate is intended for an authorized lab environment. It still uses the o
 3. On the existing VM333 installation, press **Super+Ctrl+M**.
 4. Type an application name for local search. For AI, enable AI, explicitly choose a provider/model, and use the `ai:` prefix.
 
-Use the [private prerelease](https://github.com/mapski/omarchy.spotlight-AI.qsecofr/releases/tag/v1.0.0-rc.1) for the source-only archive and checksum. No weights, provider binaries, tokens, account state or history are bundled.
+Use the [preview prerelease](https://github.com/mapski/omarchy.spotlight-AI.qsecofr/releases/tag/v1.0.0-rc.1) for the source-only archive and checksum. No weights, provider binaries, tokens, account state or history are bundled.
 
 ## Privacy and scope
 

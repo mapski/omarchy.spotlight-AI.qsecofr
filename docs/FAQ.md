@@ -1,6 +1,6 @@
 # Questions and current limits
 
-**Is this a finished public 1.0?** No. It is private candidate 1.0.0-rc.1. Real inference and final public packaging acceptance remain pending.
+**Is this a finished public 1.0?** No. It is preview candidate 1.0.0-rc.1. Real inference and final public packaging acceptance remain pending.
 
 **Does it replace Omarchy's shell?** No. It is a user-owned overlay clone using the existing shell lifecycle.
 
