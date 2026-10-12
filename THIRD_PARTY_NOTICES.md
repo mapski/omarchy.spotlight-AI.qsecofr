@@ -50,3 +50,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+## Optional external jcode runtime
+
+[jcode v0.94.0](https://github.com/1jehuang/jcode/tree/v0.94.0), MIT, is separately installed only by owner approval. No source or binary is bundled with this plugin. Version, artifact hashes and installation scope: docs/JCODE.md.

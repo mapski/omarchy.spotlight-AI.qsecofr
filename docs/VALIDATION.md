@@ -87,3 +87,17 @@ User reported successful login with no app account. Live inspection confirmed th
 70 offline tests pass locally and on VM333. Browser callback success now follows token validation and atomic saving; failures retain only an allowlisted stage name, never raw exception/URL/token data. Account changes and sign-out clear old diagnostic success. Manifest and QML validation pass with existing metadata warnings. Direct-route UI selection and startup were exercised on VM333: the app registration file was created before browser authorization. User completion verification is pending; no inference requests were made. Claude and Codex CLI execution remain blocked.
 
 Final UI check: the prominent Continue with ChatGPT button selected the direct route and opened the official page naming **Omarchy Model Search**. Existing native Codex login was not reused. Browser account selection/consent remains user-controlled.
+
+## ChatGPT + LM Studio lab configuration — 2026-10-11
+
+No production code changed. Direct ChatGPT account persistence and authenticated catalog were verified. LM Studio native model-state discovery on workstation and the deployed VM333 LocalAdapter both report only the loaded Gemma E4B Heretic Q4_K_M as available. Saved selection is lmstudio with that exact model ID. Existing shell restart succeeded; VM listener is 127.0.0.1:1234 only. Dedicated SSH authorization restricts forwarding and disallows shell execution. Superseded llama.cpp unit is inactive and disabled. No prompt sent, no model download or reload for LM Studio, no live inference/latency claim. Existing code test and lifecycle results remain unchanged; see TWO-PROVIDER-SETUP.md for temporary-tunnel limitations and cleanup.
+
+## Private v1 candidate / jcode — 2026-10-11
+
+75 offline tests passed on host and VM333. Real jcode v0.94.0 synthetic tests passed through the production adapter: streamed answer, no tool definitions, unsolicited shell tool rejected without marker execution, and no prompt forwarding on HTTP 307. The redirect regression first failed against the direct jcode transport and passed with the fixed-destination relay. Independent review identified that blocker plus cancellation/header-timeout cleanup; all were fixed. Initial import and relay-edit failures were corrected before the final passing runs.
+
+Final manifest validation and QML lint pass on VM333; existing dynamic shell/theme metadata warnings remain. jcode is available with only the loaded Gemma E4B Heretic through the existing private tunnel. Provider order is ChatGPT, Codex, jcode, Claude, then the other routes. ChatGPT active sign-in remains true; Claude has no execution adapter. No live prompt was sent. Default saved LM Studio selection was preserved.
+
+Disable/re-enable, restart and official removal/re-clone/restoration passed. Palette visual check at 1280x800 shows readable controls and saved local model. No daily-desktop plugin installation. Runtime is separate, not included in the release archive. Model download was confirmed in stopped state. Version is 1.0.0-rc.1, a private candidate, not public 1.0 acceptance. Live inference/latency, IME, permanent public identity and explicit release approval remain pending.
+
+Final keyboard visual check opened the provider menu: ChatGPT first, blocked Codex second, jcode LM Studio Q&A third. The existing local model selection was preserved.

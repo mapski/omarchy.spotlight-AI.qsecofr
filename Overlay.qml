@@ -156,7 +156,7 @@ Item {
           else if (event.kind === "auth_opened") { root.status = event.text; root.dismiss() }
           else if (event.kind === "auth_status") { root.checkingAuth = false; root.status = event.route_id + ": " + event.text; if (event.route_id === "chatgpt") root.chatgptAuthStatus = event.text }
           else if (event.kind === "discovery_error") { root.discovering = false; root.status = event.text }
-          else if (event.kind === "providers") { root.discovering = false; root.providers = event.providers.map(p => Object.assign({}, p, {label: p.route_id === "chatgpt" ? "ChatGPT · Direct Q&A" : p.route_id === "codex" ? "Codex CLI · Blocked" : p.route_id})); root.restoreSelection(); root.status = "Provider availability refreshed" }
+          else if (event.kind === "providers") { root.discovering = false; root.providers = event.providers.map(p => Object.assign({}, p, {label: p.route_id === "chatgpt" ? "ChatGPT · Direct Q&A" : p.route_id === "codex" ? "Codex CLI · Blocked" : p.route_id === "jcode" ? "jcode · LM Studio Q&A" : p.route_id})); root.restoreSelection(); root.status = "Provider availability refreshed" }
           else if (event.kind === "activated") root.dismiss()
           else if (event.kind === "history") {
             root.history = event.history

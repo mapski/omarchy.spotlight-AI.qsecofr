@@ -1,6 +1,6 @@
 # Omarchy Model Search
 
-Private development prototype of a keyboard-first Omarchy search palette with optional, explicitly selected AI Q&A. The full product is not release-ready.
+Private v1 release candidate (`1.0.0-rc.1`) of a keyboard-first Omarchy search palette with explicitly selected AI Q&A. Installed on VM333; public release and live inference acceptance remain pending.
 
 Local application search, editable file-root settings, saved model selections, recent conversations with destination-bound follow-up, temporary questions, bounded private history, and offline adapters for LM Studio, llama.cpp and Ollama are implemented. Codex, Claude, Grok, Hermes and Pi are detected independently but remain disabled pending Q&A isolation verification. Live local inference tests are deferred at the user's request.
 
@@ -24,10 +24,14 @@ The Claude control opens its native sign-in and remains separate from execution 
 
 ### Direct ChatGPT connection
 
-On the authorized lab VM, press **Super+Ctrl+M**, enable AI, then click the prominent **Continue with ChatGPT** button. The provider is labeled **ChatGPT · Direct Q&A**; **Codex CLI · Blocked** is a separate unavailable route. Complete consent in your browser. Reopen the palette and refresh providers, then explicitly choose a model. This separate route uses your ChatGPT plan through the documented public API; it does not run Codex CLI. Eligibility and actual sign-in remain to be verified by the user. Live inference tests remain pending.
+On the authorized lab VM, press **Super+Ctrl+M**, enable AI, then click the prominent **Continue with ChatGPT** button. The provider is labeled **ChatGPT · Direct Q&A**; **Codex CLI · Blocked** is a separate unavailable route. Complete consent in your browser. Reopen the palette and refresh providers, then explicitly choose a model. This separate route uses your ChatGPT plan through the documented public API; it does not run Codex CLI. App sign-in persistence and authenticated model discovery have been verified on VM333. Live inference tests remain pending.
 
 **Add account** creates another registration; the account picker distinguishes registrations even with the same email. **Cancel sign-in** stops a pending attempt. **Sign out** revokes the refresh token when possible and clears local tokens; a revocation failure is reported so you can disconnect the app in ChatGPT Settings. Tokens are stored separately from history under `~/.local/state/omarchy-model-search/chatgpt-auth` (or XDG_STATE_HOME). Clear history does not sign you out. Plugin removal preserves state: sign out first if disconnecting, and remove the state directory yourself only if you also want to erase saved settings/history/registration identities.
 
 Install `python-pyjwt` and `python-cryptography` using the supported Omarchy package workflow on an authorized machine. For isolated development environments, use `requirements.txt`. Credentials remain backend-only in owner-restricted files; this is not encrypted storage or protection against another process running as your user. Claude and Codex CLI execution remain blocked.
 
 The browser confirms **ChatGPT account saved successfully** only after validation and persistence. If sign-in fails, the app retains a safe stage name (listener, registration storage, browser, token exchange, identity, permissions or credential storage) across palette reopenings; it never stores raw OAuth errors, callback URLs or tokens in diagnostics.
+
+## Optional jcode route
+
+The reviewed jcode runtime can answer through an explicitly selected, already loaded LM Studio model. ChatGPT remains the first paid option; Claude stays blocked. See [jcode setup, footprint and isolation](docs/JCODE.md). New runtime/model downloads require owner approval.

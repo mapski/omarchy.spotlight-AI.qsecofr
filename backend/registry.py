@@ -2,6 +2,7 @@
 import shutil
 from backend.providers.base import ProviderStatus
 from backend.providers.local import LocalAdapter
+from backend.providers.jcode import JcodeAdapter
 
 # Installed-version review: see docs/providers.md. Presence is never readiness.
 CLI_BLOCKERS = {
@@ -15,6 +16,7 @@ CLI_BLOCKERS = {
 class Registry:
     def __init__(self):
         self.adapters = {
+            'jcode': JcodeAdapter(),
             'lmstudio': LocalAdapter('lmstudio', 'http://127.0.0.1:1234'),
             'llamacpp': LocalAdapter('llamacpp', 'http://127.0.0.1:8080'),
             'ollama': LocalAdapter('ollama', 'http://127.0.0.1:11434'),
@@ -28,4 +30,5 @@ class Registry:
             statuses.append(ProviderStatus(name, False, reason))
         for adapter in self.adapters.values():
             statuses.append(adapter.discover())
-        return statuses
+        order = {name: index for index, name in enumerate(('chatgpt', 'codex', 'jcode', 'claude', 'lmstudio', 'llamacpp', 'ollama', 'grok', 'hermes', 'pi'))}
+        return sorted(statuses, key=lambda status: order.get(status.route_id, 99))

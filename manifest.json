@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
   "id": "mp.emojis",
-  "name": "Model Search (development)",
-  "version": "0.1.0",
+  "name": "Model Search (private v1 candidate)",
+  "version": "1.0.0-rc.1",
   "author": "Omarchy",
   "description": "Local search and explicit model Q&A; development clone",
   "kinds": [

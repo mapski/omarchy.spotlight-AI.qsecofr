@@ -1,7 +1,15 @@
 # Active handoff: Omarchy Model Search
 
 **Updated:** 2026-10-11 (America/Toronto)
-**Stage:** Private prototype implementation and lab validation in progress.
+**Stage:** Private v1 candidate 1.0.0-rc.1 installed on VM333; no public release.
+
+## Current continuation: jcode and minimum downloads
+
+User approved jcode after Codex, Q&A only, ChatGPT working and Claude blocked. Owner approval is required for any additional dependency/model downloads. Gemma E2B transfer is paused (partial staging file on Work volume); do not resume. jcode v0.94.0 official runtime installed only VM333; master 0.95 development is not tested. New adapter uses loaded LM Studio only, temporary private config, no tools/MCP, and a no-redirect relay. Colibri is priority evaluation, not a download approval. Read docs/JCODE.md and latest validation before acting.
+
+## Active pair — ChatGPT and workstation LM Studio
+
+ChatGPT app login is now verified saved; catalog discovery succeeded. User chose their loaded LM Studio Heretic model. VM333 discovers and selects `gemma-4-e4b-it-ultra-uncensored-heretic` through a temporary loopback-only SSH reverse tunnel to workstation port 1234. The separate llama.cpp service is stopped and disabled. Read docs/TWO-PROVIDER-SETUP.md for host distinction and tunnel lifecycle. No inference performed; Claude stays blocked and other provider expansion is paused. No plugin installed on daily desktop; no push.
 
 ## Sign-in routing fix — 2026-10-11
 
