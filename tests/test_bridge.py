@@ -196,3 +196,12 @@ class BridgeTests(unittest.TestCase):
             with patch('backend.main.subprocess.Popen') as browser, patch('backend.chatgpt_auth.HTTPServer',side_effect=OSError('fixture')) as server:
                 target,args=queued[0];target(*args)
                 browser.assert_not_called();server.assert_not_called()
+
+    def test_codex_signin_does_not_open_unusable_cli_route(self):
+        from unittest.mock import patch
+        with tempfile.TemporaryDirectory() as tmp:
+            events=[];bridge=Bridge(Path(tmp),events.append)
+            with patch.object(bridge.auth,'launch') as native:
+                bridge.handle({'op':'auth_login','route_id':'codex'})
+            native.assert_not_called()
+            self.assertIn('ChatGPT',events[-1]['text'])

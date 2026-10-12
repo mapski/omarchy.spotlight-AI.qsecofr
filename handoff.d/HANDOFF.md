@@ -3,6 +3,10 @@
 **Updated:** 2026-10-11 (America/Toronto)
 **Stage:** Private prototype implementation and lab validation in progress.
 
+## Sign-in routing fix — 2026-10-11
+
+User’s Foot success message was native Codex login; direct app registration had not started. Removed misleading CLI sign-in action in favor of explicit Connect ChatGPT Q&A route selection. Added sanitized persisted failure stages and browser confirmation only after actual credential saving. 70 tests pass host/VM; manifest/QML pass. Direct app browser flow now started on VM333, initial registration file creation verified, user completing authorization. Keep Claude blocked and inference pending. See latest docs/VALIDATION.md.
+
 ## Direct ChatGPT continuation — 2026-10-11
 
 User approved direct Sign in with ChatGPT. Separate `chatgpt` route now owns public-client OAuth credentials and uses the documented public Responses API with Q&A-only payloads. Claude and Codex CLI remain blocked; live inference remains pending. Active implementation remains in `/home/mp/.codex/worktrees/model-search/Omarchy-Model-Search`, branch `codex/model-search`.

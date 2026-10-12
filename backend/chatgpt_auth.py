@@ -114,6 +114,17 @@ class ChatGPTAuth:
             self.generation += 1
             self.stop.set()
 
+    def login_status(self):
+        data = self.store._read('login-status.json', {})
+        # Only records constructed here are returned; never arbitrary stored text.
+        stage = data.get('stage')
+        if stage not in {'callback_listener','registration_storage','browser_launch','browser_callback',
+                         'token_exchange','identity_validation','permissions','credential_storage','complete'}:
+            return {}
+        ok = data.get('signed_in') is True and stage == 'complete'
+        text = 'ChatGPT account saved successfully.' if ok else 'ChatGPT sign-in failed at ' + stage.replace('_',' ') + '. Retry Continue with ChatGPT.'
+        return {'kind':'auth_status','route_id':'chatgpt','signed_in':ok,'stage':stage,'text':text}
+
     def accounts(self):
         with self.locked() as data:
             return {'active': data['active'], 'accounts': [
@@ -125,6 +136,7 @@ class ChatGPTAuth:
         with self.locked() as data:
             if handle not in data['accounts']: raise ValueError('Unknown account')
             data['active'] = handle; data['generation'] = data.get('generation',0)+1; self.save(data)
+            self.store._write('login-status.json', {})
 
     def transaction(self, redirect, handle=''):
         with self.locked() as data:
@@ -185,7 +197,7 @@ class ChatGPTAuth:
                 'refresh_token': tokens['refresh_token'], 'id_token': tokens.get('id_token', (old or {}).get('id_token', '')),
                 'scopes': sorted(scopes), 'expires_at': time.time() + lifetime}
 
-    def complete(self, tx, callback):
+    def complete(self, tx, callback, progress=lambda stage: None):
         if tx['used'] or time.monotonic() > tx['expires'] or not secrets.compare_digest(callback.get('state',''), tx['state']):
             raise ValueError('Invalid or expired callback')
         tx['used'] = True
@@ -196,12 +208,16 @@ class ChatGPTAuth:
         if tx['client_id'] != 'dynamic_agent_client' and client != tx['client_id']: raise ValueError('Registration changed')
         code = callback.get('code')
         if not isinstance(code, str) or not code or len(code) > 8192: raise ValueError('Missing code')
+        progress('token_exchange')
         tokens = self.net.json(AUTH + '/api/accounts/oauth/token', form={'grant_type':'authorization_code',
             'client_id':client, 'code':code, 'code_verifier':tx['verifier'], 'redirect_uri':tx['redirect_uri'], 'resource':API})
+        progress('identity_validation')
         claims = self.identity(tokens.get('id_token',''), client, tx['nonce'])
         if tx['subject'] and claims['sub'] != tx['subject']: raise ValueError('Account changed')
+        progress('permissions')
         record = self.record(tokens, client, claims['sub'], claims.get('email',''))
         handle = hashlib.sha256((client+'\0'+claims['sub']).encode()).hexdigest()
+        progress('credential_storage')
         with self.locked() as data:
             with self.commit_lock:
                 if self.stop.is_set() or tx['generation'] != self.generation or tx['credential_generation'] != data.get('generation',0):
@@ -241,6 +257,7 @@ class ChatGPTAuth:
                     self.net.json(endpoint, form={'token':account['refresh_token'],'token_type_hint':'refresh_token','client_id':account['client_id']})
                 confirmed = True
             except Exception: pass
+            self.store._write('login-status.json', {})
             for name in ['access_token','refresh_token','id_token','expires_at','scopes']: account.pop(name,None)
             data['generation'] = data.get('generation',0)+1
             self.save(data)
@@ -249,6 +266,10 @@ class ChatGPTAuth:
     def login(self, open_browser, emit, handle='', expected_generation=None):
         if not self.pending_lock.acquire(blocking=False): raise ValueError('Login already running')
         owner = self; completed = threading.Event(); result = {}; started = False
+        stage = 'callback_listener'
+        def progress(value):
+            nonlocal stage
+            stage = value
         try:
             with self.commit_lock:
                 if expected_generation is not None and expected_generation != self.generation:
@@ -274,23 +295,38 @@ class ChatGPTAuth:
                         callback={k:v[0] for k,v in values.items()}
                         if not secrets.compare_digest(callback.get('state',''),tx['state']): raise ValueError('Invalid state')
                         result.update(callback);completed.set()
-                        body=b'Sign-in received. Return to Omarchy Model Search to check the result.'
+                        try:
+                            owner.complete(tx,result,progress)
+                            result['saved'] = True
+                            body=b'ChatGPT account saved successfully. Return to Omarchy Model Search.'
+                        except Exception:
+                            result['saved'] = False
+                            body=b'ChatGPT sign-in was not saved. Reopen Model Search for the failing step and retry.'
                         self.send_response(200);self.send_header('Content-Type','text/plain');self.send_header('Cache-Control','no-store');self.send_header('Referrer-Policy','no-referrer');self.end_headers();self.wfile.write(body)
                     except (ValueError,TypeError): self.send_error(400)
             with HTTPServer(('127.0.0.1',0),Handler) as server:
                 server.timeout=.25
+                progress('registration_storage')
                 tx=self.transaction('http://127.0.0.1:'+str(server.server_port)+'/auth/callback',handle)
                 ticket=secrets.token_urlsafe(32)
                 with self.commit_lock:
                     if self.stop.is_set() or expected_generation != self.generation:
                         raise ValueError('Sign-in cancelled')
+                    progress('browser_launch')
                     open_browser('http://127.0.0.1:'+str(server.server_port)+'/start?'+ticket)
                 emit({'kind':'auth_opened','text':'Complete Continue with ChatGPT in your browser. Reopen the palette to check status.'})
+                progress('browser_callback')
                 while not completed.is_set() and not self.stop.is_set() and time.monotonic()<tx['expires']:
                     server.handle_request()
                 if self.stop.is_set() or not completed.is_set(): raise ValueError('Sign-in cancelled or expired')
-                self.complete(tx,result)
-            emit({'kind':'auth_status','route_id':'chatgpt','signed_in':True,'text':'Signed in. Refresh providers to load your model choices.'})
+                if not result.get('saved'): raise ValueError('Sign-in not saved')
+            progress('complete')
+            self.store._write('login-status.json', {'stage':stage,'signed_in':True})
+            emit(self.login_status())
         except Exception:
-            emit({'kind':'auth_status','route_id':'chatgpt','signed_in':False,'text':'Sign-in not completed. Retry from the account controls.'})
+            event={'kind':'auth_status','route_id':'chatgpt','signed_in':False,'stage':stage,
+                   'text':'ChatGPT sign-in failed at '+stage.replace('_',' ')+'. Retry Continue with ChatGPT.'}
+            try: self.store._write('login-status.json', {'stage':stage,'signed_in':False})
+            except Exception: pass
+            emit(event)
         finally: self.pending_lock.release()

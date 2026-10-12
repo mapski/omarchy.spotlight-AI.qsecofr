@@ -97,7 +97,9 @@ class ChatGPTTests(unittest.TestCase):
 
     def test_signout_clears_tokens_retains_registration(self):
         handle=self.login();self.net.responses[AUTH+'/revoke']={}
+        self.auth.store._write('login-status.json', {'stage':'complete','signed_in':True})
         self.auth.logout(handle);self.assertFalse(self.auth.accounts()['accounts'][0]['signed_in'])
+        self.assertEqual(self.auth.login_status(),{})
         self.assertEqual(self.auth.transaction('http://127.0.0.1:1234/auth/callback',handle)['client_id'],'oaiapp_fixture')
 
     def test_signature_tampering_rejected(self):
@@ -119,7 +121,10 @@ class ChatGPTTests(unittest.TestCase):
             self.callback_base=base
             def callback():
                 req=base+'/auth/callback?'+urlencode({'state':self.tx['state'],'code':'fixture','client_id':'oaiapp_fixture'})
-                with urllib.request.urlopen(req,timeout=3) as response:self.assertEqual(response.status,200)
+                with urllib.request.urlopen(req,timeout=3) as response:
+                    self.assertEqual(response.status,200)
+                    self.assertIn(b'account saved successfully',response.read())
+                    self.assertEqual(len(self.auth.accounts()['accounts']),1)
             self.callback_thread=threading.Thread(target=callback);self.callback_thread.start()
         with patch.object(self.auth,'transaction',side_effect=transaction):
             self.auth.login(browser,events.append)
@@ -155,3 +160,11 @@ class ChatGPTTests(unittest.TestCase):
         self.assertEqual(result[-1]['type'],'response.completed')
         req=opened.call_args.args[0];self.assertEqual(req.full_url,API+'/responses')
         self.assertEqual(req.get_header('Authorization'),'Bearer synthetic')
+
+    def test_login_failure_reports_safe_stage(self):
+        events=[]
+        with patch('backend.chatgpt_auth.HTTPServer',side_effect=OSError('SECRET fixture URL')):
+            self.auth.login(lambda url:None,events.append)
+        self.assertEqual(events[-1]['stage'],'callback_listener')
+        self.assertNotIn('SECRET',json.dumps(events))
+        self.assertEqual(self.auth.login_status()['stage'],'callback_listener')

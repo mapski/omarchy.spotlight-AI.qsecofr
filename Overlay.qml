@@ -21,6 +21,7 @@ Item {
   property bool checkingAuth: false
   readonly property string authRoute: provider.currentIndex >= 0 ? providers[provider.currentIndex].route_id : ""
   property string answer: ""
+  property string chatgptAuthStatus: ""
   property string status: "Local search · AI is optional"
   property string queryId: ""
   property string answerId: ""
@@ -35,6 +36,13 @@ Item {
   readonly property string destination: provider.currentIndex >= 0 && modelPicker.currentIndex >= 0
     ? providers[provider.currentIndex].route_id + " / " + models[modelPicker.currentIndex].id + " · " + models[modelPicker.currentIndex].locality
     : savedSelection.model_id ? savedSelection.route_id + " / " + savedSelection.model_id + " · unavailable until verified" : "No model selected"
+  function connectChatGPT() {
+    const index = root.providers.findIndex(p => p.route_id === "chatgpt")
+    if (index < 0) { root.status = "Refresh providers to load the ChatGPT connection"; return }
+    provider.currentIndex = index; root.models = []; modelPicker.currentIndex = -1
+    root.conversationId = ""; root.answer = ""
+    root.send({op: "auth_login", route_id: "chatgpt", account_id: root.chatgptActive})
+  }
   function newChat() { conversationId = ""; answer = ""; input.text = "ai: "; input.forceActiveFocus() }
   function saveSelection() {
     if (provider.currentIndex < 0 || modelPicker.currentIndex < 0) return
@@ -146,9 +154,9 @@ Item {
             accountPicker.currentIndex = event.accounts.findIndex(a => a.id === event.active)
           }
           else if (event.kind === "auth_opened") { root.status = event.text; root.dismiss() }
-          else if (event.kind === "auth_status") { root.checkingAuth = false; root.status = event.route_id + ": " + event.text }
+          else if (event.kind === "auth_status") { root.checkingAuth = false; root.status = event.route_id + ": " + event.text; if (event.route_id === "chatgpt") root.chatgptAuthStatus = event.text }
           else if (event.kind === "discovery_error") { root.discovering = false; root.status = event.text }
-          else if (event.kind === "providers") { root.discovering = false; root.providers = event.providers; root.restoreSelection(); root.status = "Provider availability refreshed" }
+          else if (event.kind === "providers") { root.discovering = false; root.providers = event.providers.map(p => Object.assign({}, p, {label: p.route_id === "chatgpt" ? "ChatGPT · Direct Q&A" : p.route_id === "codex" ? "Codex CLI · Blocked" : p.route_id})); root.restoreSelection(); root.status = "Provider availability refreshed" }
           else if (event.kind === "activated") root.dismiss()
           else if (event.kind === "history") {
             root.history = event.history
@@ -228,6 +236,7 @@ Item {
           Layout.fillWidth: true
           CheckBox { text: "Enable AI"; checked: root.aiEnabled; onClicked: root.send({op: "opt_in", enabled: checked}) }
           Button { text: root.discovering ? "Checking…" : "Refresh providers"; enabled: !root.busy && !root.discovering; onClicked: { root.discovering = true; root.status = "Checking providers…"; root.send({op: "discover"}) } }
+          Button { text: "Continue with ChatGPT"; visible: root.aiEnabled && root.authRoute !== "chatgpt"; enabled: !root.busy && !root.discovering; onClicked: root.connectChatGPT() }
           Button { text: "Web search"; enabled: input.text.trim().length > 0; onClicked: Qt.openUrlExternally("https://duckduckgo.com/?q=" + encodeURIComponent(input.text)) }
         }
         RowLayout {
@@ -237,7 +246,7 @@ Item {
             id: provider
             Layout.fillWidth: true
             model: root.providers
-            textRole: "route_id"
+            textRole: "label"
             currentIndex: -1
             displayText: currentIndex < 0 ? "Choose provider" : currentText
             enabled: root.aiEnabled && !root.busy
@@ -282,13 +291,24 @@ Item {
               onClicked: { root.models = []; root.conversationId = ""; root.answer = ""; root.send({op: "auth_logout", route_id: "chatgpt", account_id: root.chatgptActive}) } }
             Button { text: "Cancel sign-in"; onClicked: root.send({op: "auth_cancel"}) }
           }
+          Label { visible: root.chatgptAuthStatus !== ""; text: root.chatgptAuthStatus; wrapMode: Text.Wrap; Layout.fillWidth: true }
           Label { text: "Uses your ChatGPT plan · Cloud · Q&A only · Live inference untested"; wrapMode: Text.Wrap; Layout.fillWidth: true }
         }
         RowLayout {
           visible: (input.text.indexOf("ai:") === 0 || root.aiEnabled) && (root.authRoute === "claude" || root.authRoute === "codex")
-          Button { text: "Sign in"; visible: root.authRoute === "claude" || root.authRoute === "codex"; enabled: !root.busy && !root.checkingAuth
+          Button { text: "Sign in to Claude"; visible: root.authRoute === "claude"; enabled: !root.busy && !root.checkingAuth
             onClicked: root.send({op: "auth_login", route_id: root.authRoute}) }
-          Button { text: root.checkingAuth ? "Checking…" : "Check again"; visible: root.authRoute === "claude" || root.authRoute === "codex"; enabled: !root.busy && !root.checkingAuth
+          Button { text: "Connect ChatGPT Q&A"; visible: root.authRoute === "codex"; enabled: !root.busy
+            onClicked: {
+              const index = root.providers.findIndex(p => p.route_id === "chatgpt")
+              if (index >= 0) {
+                provider.currentIndex = index; root.models = []; modelPicker.currentIndex = -1
+                root.conversationId = ""; root.answer = ""
+                root.status = "Use Continue with ChatGPT to connect this app. Codex CLI remains blocked."
+              }
+            }
+          }
+          Button { text: root.checkingAuth ? "Checking…" : "Check again"; visible: root.authRoute === "claude"; enabled: !root.busy && !root.checkingAuth
             onClicked: { root.checkingAuth = true; root.send({op: "auth_check", route_id: root.authRoute}) } }
         }
         RowLayout {

@@ -85,6 +85,9 @@ class Bridge:
                 self.chatgpt.cancel_login()
             elif op == 'auth_login' and message.get('route_id') == 'chatgpt':
                 self._start_worker(self._chatgpt_login, (message.get('account_id', ''), self.chatgpt.login_generation()))
+            elif op == 'auth_login' and message.get('route_id') == 'codex':
+                self.emit({'kind':'auth_status','route_id':'codex','signed_in':False,
+                    'text':'Codex CLI execution is blocked. Choose ChatGPT for the app connection.'})
             elif op == 'auth_login':
                 self.auth.launch(message.get('route_id'))
                 self.emit({'kind': 'auth_opened', 'text': 'Complete sign-in in the terminal/browser, then select Check again.'})
@@ -171,6 +174,8 @@ class Bridge:
         try:
             if handle is not None: self.chatgpt.select(handle)
             self.emit(dict(self.chatgpt.accounts(), kind='chatgpt_accounts'))
+            status = self.chatgpt.login_status()
+            if status: self.emit(status)
         except Exception:
             self.emit({'kind':'auth_status','route_id':'chatgpt','signed_in':False,'text':'Account operation failed; retry.'})
 

@@ -78,3 +78,12 @@ Focused independent review found and verified fixes for three races: late token 
 Final VM manifest validation and qmllint (Overlay.qml and ui/Answer.qml with installed qs metadata) exit zero; existing dynamic-theme and shell metadata warnings remain. An initial lint invocation used a nonexistent AnswerView.qml path; rerunning with the actual component passed. ChatGPT controls and empty-account state fit at 1280x800, keyboard provider selection works, and Super+Ctrl+M opens the restored final build. Disable/re-enable, shell restart and removal/re-clone passed; builtin emojis were restored by removal. Plugin-specific journal inspection showed reload notices and no error; unrelated shell/plugin warnings remain. No second shell was started.
 
 Live authentication, refresh/revocation against the real service, actual model discovery, streaming/inference, IME acceptance and final release packaging/license audit remain pending. Claude and Codex CLI execution remain blocked. No push/public release or daily-desktop installation.
+
+
+## Sign-in routing and persistence diagnostics — 2026-10-11
+
+User reported successful login with no app account. Live inspection confirmed the success message was in the native Codex Foot terminal; the separate app registration file did not yet exist. Running-app cwd/state-root and deployed code hashes matched expectations. The ambiguous Codex sign-in action is removed: its explicit Connect ChatGPT Q&A control selects the direct route, and backend Codex login requests no longer launch the CLI.
+
+70 offline tests pass locally and on VM333. Browser callback success now follows token validation and atomic saving; failures retain only an allowlisted stage name, never raw exception/URL/token data. Account changes and sign-out clear old diagnostic success. Manifest and QML validation pass with existing metadata warnings. Direct-route UI selection and startup were exercised on VM333: the app registration file was created before browser authorization. User completion verification is pending; no inference requests were made. Claude and Codex CLI execution remain blocked.
+
+Final UI check: the prominent Continue with ChatGPT button selected the direct route and opened the official page naming **Omarchy Model Search**. Existing native Codex login was not reused. Browser account selection/consent remains user-controlled.
