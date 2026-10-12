@@ -78,7 +78,7 @@ omarchy plugin validate .
 
 Install requirements only with owner approval. The full test suite needs Node for JavaScript checks; QML lint needs the installed Omarchy shell imports. See [contributing](CONTRIBUTING.md) for the verification and release gates.
 
-[Architecture](ARCHITECTURE.md) · [Roadmap](docs/ROADMAP.md) · [Known limits / FAQ](docs/FAQ.md) · [Validation evidence](docs/VALIDATION.md)
+[Delivery process](docs/DELIVERY-PROCESS.md) · [Project tracker](docs/PROJECT-TRACKER.md) · [Release gates](docs/RELEASE-CHECKLIST.md) · [Architecture](ARCHITECTURE.md) · [Roadmap](docs/ROADMAP.md) · [Known limits / FAQ](docs/FAQ.md) · [Validation evidence](docs/VALIDATION.md)
 
 ## License and credits
 

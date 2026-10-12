@@ -1,3 +1,7 @@
+# Current-state navigation
+
+This file preserves dated validation snapshots. Use [PROJECT-TRACKER.md](PROJECT-TRACKER.md) for current release status. Public source preview was approved and published; older private/no-push snapshots are historical. Final 1.0, live inference and IME acceptance remain pending.
+
 # Development validation — 2026-10-11
 
 This is a private development prototype, not a release candidate.

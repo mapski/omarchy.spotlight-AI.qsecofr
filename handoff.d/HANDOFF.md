@@ -3,9 +3,13 @@
 **Updated:** 2026-10-11 (America/Toronto)
 **Stage:** Owner-approved public source preview 1.0.0-rc.1 published on GitHub; lab candidate installed on VM333. Final 1.0 and live inference remain pending.
 
+## Delivery tracking — 2026-10-11
+
+Owner requested the process and tracker in the repository, Model Search first, mandatory security review gates. Read docs/DELIVERY-PROCESS.md and docs/PROJECT-TRACKER.md for current work. Older entries below are dated snapshots, not current release status.
+
 ## GitHub candidate and launch kit — 2026-10-11
 
-Owner requested private GitHub distribution and social promotion. Candidate assets now include real VM screenshots, original SVG/PNG graphics, setup/security/FAQ/contribution docs and platform drafts under docs/marketing. Owner explicitly approved public preview visibility and identified X @haldodev. Browser sign-in remains pending. Public preview does not imply final 1.0 or marketplace acceptance. Preserve Claude block, pending live inference and paused model download. Earlier no-push snapshots below are historical; check the remote and private prerelease for distribution status.
+Owner requested private GitHub distribution and social promotion. Candidate assets now include real VM screenshots, original SVG/PNG graphics, setup/security/FAQ/contribution docs and platform drafts under docs/marketing. Owner explicitly approved public preview visibility and identified X @haldodev. Browser sign-in remains pending. Public preview does not imply final 1.0 or marketplace acceptance. Preserve Claude block, pending live inference and paused model download. Earlier no-push snapshots below are historical; check the remote and public prerelease for distribution status.
 
 ## Current continuation: jcode and minimum downloads
 

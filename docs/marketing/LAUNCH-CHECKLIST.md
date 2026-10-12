@@ -6,7 +6,7 @@
 - [x] Real local-search, provider-picker and palette screenshots reviewed.
 - [x] README, setup, security, FAQ, roadmap and contribution docs prepared.
 - [x] Platform-specific preview copy drafted.
-- [ ] GitHub preview prerelease uploaded and remote commit verified.
+- [x] GitHub preview prerelease uploaded and remote commit verified (source fda6080deaab325c915a94857e9ae2c17cffebf9).
 - [x] Owner explicitly approved public preview visibility on 2026-10-11.
 - [ ] Owner identifies publishing accounts; access verified without sharing credentials.
 - [ ] Publish approved posts and record exact URLs below.
