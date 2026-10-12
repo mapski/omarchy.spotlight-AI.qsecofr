@@ -18,4 +18,4 @@ Disable with `omarchy plugin disable mp.emojis`. Remove with `omarchy plugin rem
 
 ## Remaining release gates
 
-Real ChatGPT/local inference, streaming/cancellation with real providers, IME acceptance, final permanent public identity, final public license/package review and explicit public-release approval. No push or visibility change is included in this candidate.
+Real ChatGPT/local inference, streaming/cancellation with real providers, IME acceptance, final permanent public identity, final public license/package review and explicit public-release approval. The owner requested GitHub distribution of this private candidate. Public visibility remains a separate explicit decision; publishing a prerelease in a private repository does not make its contents public.

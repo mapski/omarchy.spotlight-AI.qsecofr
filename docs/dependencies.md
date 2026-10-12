@@ -14,7 +14,7 @@ Verified on VM333 on 2026-10-11. The original backend used only the standard lib
 
 Direct ChatGPT requires PyJWT with cryptography (requirements.txt); there are no npm runtime dependencies. Test discovery skips JavaScript checks if Node is absent; release verification must have Node installed and no skipped checks.
 
-Model services/models are separately user-managed. No model server or model was installed. Provider command presence is not proof of authentication or safe execution.
+Model services/models are separately user-managed. A separate llama.cpp/Qwen lab setup was installed and then stopped/disabled when the owner chose existing workstation LM Studio. The optional jcode runtime is installed only on VM333; it is not bundled. Gemma E2B download is paused. See JCODE.md and TWO-PROVIDER-SETUP.md. Provider command presence is not proof of authentication or safe execution.
 
 Use Omarchy's supported package commands for missing dependencies on an authorized test desktop. Never run an upstream plugin installer or silently bootstrap a provider during discovery. The earlier Hermes help invocation triggered its installed lazy bootstrap; see environment.md.
 

@@ -3,6 +3,10 @@
 **Updated:** 2026-10-11 (America/Toronto)
 **Stage:** Private v1 candidate 1.0.0-rc.1 installed on VM333; no public release.
 
+## GitHub candidate and launch kit — 2026-10-11
+
+Owner requested private GitHub distribution and social promotion. Candidate assets now include real VM screenshots, original SVG/PNG graphics, setup/security/FAQ/contribution docs and platform drafts under docs/marketing. Social publishing awaits account identification; public visibility remains unapproved. Preserve Claude block, pending live inference and paused model download. Earlier no-push snapshots below are historical; check the remote and private prerelease for distribution status.
+
 ## Current continuation: jcode and minimum downloads
 
 User approved jcode after Codex, Q&A only, ChatGPT working and Claude blocked. Owner approval is required for any additional dependency/model downloads. Gemma E2B transfer is paused (partial staging file on Work volume); do not resume. jcode v0.94.0 official runtime installed only VM333; master 0.95 development is not tested. New adapter uses loaded LM Studio only, temporary private config, no tools/MCP, and a no-redirect relay. Colibri is priority evaluation, not a download approval. Read docs/JCODE.md and latest validation before acting.

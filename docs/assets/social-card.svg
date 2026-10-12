@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="t d">
+<title id="t">Model Search — private v1 preview</title><desc id="d">Find locally. Ask deliberately. Keyboard-first search and explicit AI Q and A for Omarchy.</desc>
+<rect width="1200" height="630" fill="#080e20"/>
+<path d="M64 108H1136M64 514H1136" stroke="#34415a"/>
+<circle cx="82" cy="62" r="15" fill="none" stroke="#ffbf8c" stroke-width="3"/><path d="m93 73 13 13" stroke="#ffbf8c" stroke-width="3"/>
+<text x="128" y="75" font-family="sans-serif" font-size="26" font-weight="700" fill="#f8ede0">MODEL SEARCH</text>
+<text x="1136" y="72" text-anchor="end" font-family="monospace" font-size="16" fill="#b9c2d5">FOR OMARCHY</text>
+<text x="64" y="243" font-family="sans-serif" font-size="82" font-weight="700" letter-spacing="-3" fill="#f8ede0">Find locally.</text>
+<text x="64" y="342" font-family="sans-serif" font-size="82" font-weight="700" letter-spacing="-3" fill="#ffbf8c">Ask deliberately.</text>
+<text x="68" y="412" font-family="sans-serif" font-size="25" fill="#b9c2d5">One palette. An explicit choice before every AI destination.</text>
+<rect x="66" y="545" width="236" height="40" rx="20" fill="#1b2940"/><text x="184" y="571" text-anchor="middle" font-family="monospace" font-size="15" fill="#ffbf8c">PRIVATE V1 PREVIEW</text>
+<text x="1135" y="574" text-anchor="end" font-family="monospace" font-size="19" fill="#f8ede0">Super + Ctrl + M</text>
+</svg>
