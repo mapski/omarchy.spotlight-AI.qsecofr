@@ -1,7 +1,7 @@
 # Active handoff: Omarchy Model Search
 
 **Updated:** 2026-10-11 (America/Toronto)
-**Stage:** Private v1 candidate 1.0.0-rc.1 installed on VM333; no public release.
+**Stage:** Owner-approved public source preview 1.0.0-rc.1 published on GitHub; lab candidate installed on VM333. Final 1.0 and live inference remain pending.
 
 ## GitHub candidate and launch kit — 2026-10-11
 

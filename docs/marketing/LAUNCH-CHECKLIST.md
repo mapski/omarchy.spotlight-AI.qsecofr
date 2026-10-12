@@ -24,3 +24,7 @@
 | Developer communities | Select relevant communities and check rules | Draft ready | — |
 
 A prepared draft is not a published post. Do not report a successful launch without post URLs and verified visibility. No paid advertising, ad spend, new account creation or blanket distribution has been authorized.
+
+Public preview: https://github.com/mapski/omarchy.spotlight-AI.qsecofr/releases/tag/v1.0.0-rc.1
+
+The immutable release archives reflect the tagged source commit; this ledger records subsequent publication status. X @haldodev is identified but browser authentication is still required. No social post has been published.
