@@ -17,4 +17,4 @@ Use an authorized lab desktop, a user-owned official overlay clone and the gener
 
 Keep real inference deferred until the owner changes that instruction. Never store secrets or private prompts in fixtures, screenshots or logs. Screenshots must be actual captures, with demo states clearly identified.
 
-Before a push, confirm exact remote identity, private visibility and existing history. No force-push or public visibility change without explicit authorization. Public 1.0 still needs the outstanding release gates and owner approval.
+Before a push, confirm exact remote identity, approved visibility and existing history. No force-push or public visibility change without explicit authorization. Public 1.0 still needs the outstanding release gates and owner approval.

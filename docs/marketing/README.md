@@ -4,7 +4,7 @@
 
 Model Search is an independent, keyboard-first Omarchy palette for local name search and explicitly selected AI Q&A. It keeps the destination visible and avoids silent provider fallback.
 
-Current campaign: **public v1 preview**, version 1.0.0-rc.1. The repository has not been approved for public release. Social copy is prepared, not evidence of publication. Do not imply public access to a private link.
+Current campaign: **public v1 preview**, version 1.0.0-rc.1. The owner approved public source-preview visibility. Social copy is prepared, not evidence of publication. Final 1.0 acceptance remains pending.
 
 ## Product brief
 

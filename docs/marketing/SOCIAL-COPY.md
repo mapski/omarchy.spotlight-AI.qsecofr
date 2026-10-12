@@ -1,6 +1,6 @@
 # Campaign copy — drafts, not posted
 
-Use the public-preview variants while repository access is restricted. The owner must identify the publishing accounts. Include the appropriate supplied graphic and alt text. No fake popularity, performance or production-readiness claims.
+Public preview visibility is approved. X account: @haldodev; other publishing accounts are not yet identified. Include the appropriate supplied graphic and alt text. No fake popularity, performance or production-readiness claims.
 
 ## X — primary post
 
@@ -69,4 +69,4 @@ Use only in a community that permits project-owner previews. Check its current r
 
 https://github.com/mapski/omarchy.spotlight-AI.qsecofr
 
-Use this in outward-facing posts only with an access explanation while it remains private. Public-preview copy may add “Source and current limitations:” followed by the link after visibility is explicitly approved and changed. Keep the live-inference caveat.
+Use this link once public visibility is verified. Keep the live-inference caveat.
